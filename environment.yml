@@ -1,0 +1,35 @@
+name: printobs
+channels:
+  - conda-forge
+dependencies:
+  - python<=3.11
+  - matplotlib>=3.1
+  - numpy>=1.15.4
+  - scipy>=1.2.0
+  - netCDF4
+  - pyyaml
+  - pyproj>=2.3
+  - cartopy>=0.19.0
+  - cmocean
+  - joblib
+  - scikit-learn>=0.19
+  - pandas
+  - pyGAM
+  # - scikit-sparse==0.4.5
+  - xarray
+  - zarr
+  - pyresample
+  - dask
+  - tqdm
+  - pytest
+  - pytest-benchmark
+  - pylint
+  - yapf
+  - sphinx
+  - python-dotenv
+  - xdg
+  - sentinelsat
+  - geojson
+  - pip
+  - pip:
+    - roaring_landmask>=0.4.1
