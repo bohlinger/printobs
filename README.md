@@ -16,6 +16,7 @@ git clone https://github.com/bohlinger/printobs.git
 
 2. Install conda environment
 ```
+cd printobs
 conda env create -f environment.yml
 ```
 
