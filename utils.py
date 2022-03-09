@@ -26,7 +26,6 @@ def make_frost_reference_time_period(sdate,edate):
 
 def get_frost_ts(sdate,edate,nID,varstr):
     import dotenv
-    import netCDF4
     import requests
     import pandas as pd
     dotenv.load_dotenv()
