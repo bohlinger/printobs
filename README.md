@@ -1,7 +1,7 @@
 # printobs
 print offshore obs to screen
 
-### Contact:
+### Contact
 Patrik Bohlinger, Norwegian Meteorological Institute, patrikb@met.no
 
 ## Purpose
@@ -9,7 +9,7 @@ Small program to print offshore obs to screen. All observations are being read f
 
 ## Installation
 
-1. Clone repository:
+1. Clone repository
 ```
 git clone https://github.com/bohlinger/printobs.git
 ```
@@ -24,14 +24,14 @@ conda env create -f environment.yml
 conda activate printobs
 ```
 
-4. Create a .env file in printobs root directory and include your FROST client id:
+4. Create a .env file in printobs root directory and include your FROST client id
 ```
 (printobs) user@pc:~/printobs$ cat .env
 CLIENT_ID=
 ```
 
 ## Usage
-Usage example and help can be obtained by typing:
+Usage example and help can be obtained by typing
 
 ```
 ./printobs.py -h
