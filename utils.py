@@ -4,7 +4,7 @@ import pandas as pd
 import os
 import yaml
 
-with open('insitu_specs.yaml', 'r') as file:
+with open('insitu_locations.yaml', 'r') as file:
     insitu_dict = yaml.safe_load(file)
 
 def parse_date(indate):
