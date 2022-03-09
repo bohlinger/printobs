@@ -58,6 +58,7 @@ def get_all_ts(sdate,edate,nID,varstr_lst):
             dftmp = pd.DataFrame([-999]*len(df))
     return df
 
-def print_formatted(df):
+def print_formatted(df,nID):
     print('\n'.join(df.to_string(index = False).split('\n')[1:]))
     print('time                       TEMP     FF     DD     Hs   Tm02     Tp')
+    print(nID)

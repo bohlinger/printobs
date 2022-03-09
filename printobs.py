@@ -49,4 +49,4 @@ varstr_lst = [
         ]
 
 df = get_all_ts(args.sd,args.ed,args.s,varstr_lst)
-print_formatted(df)
+print_formatted(df,args.s)
