@@ -30,6 +30,8 @@ conda activate printobs
 CLIENT_ID=
 ```
 
+The FROST client_id can be obtained [here](http://louiseo.pages.obs.met.no/frost_workshop/tutorial/tutorial1/).
+
 ## Usage
 Usage example and help can be obtained by typing
 
