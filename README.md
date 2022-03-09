@@ -14,7 +14,17 @@ Small program to print offshore obs to screen. All observations are being read f
 git clone https://github.com/bohlinger/printobs.git
 ```
 
-2. Create a .env file in printobs root directory and include your FROST client id:
+2. Install conda environment
+```
+conda env create -f environment.yml
+```
+
+3. Activate printobs
+```
+conda activate printobs
+```
+
+4. Create a .env file in printobs root directory and include your FROST client id:
 ```
 (printobs) user@pc:~/printobs$ cat .env
 CLIENT_ID=
