@@ -2,7 +2,9 @@
 import argparse
 from argparse import RawTextHelpFormatter
 from datetime import datetime, timedelta
-from utils import parse_date
+import time
+from utils import parse_date, get_frost_df, print_formatted
+
 
 parser = argparse.ArgumentParser(description="""
 print offshore insitu observations
@@ -35,19 +37,18 @@ if args.d is not None:
 s = dargs.get('s','valhall')
 i = None
 
-print('here')
-
 # -------------------------------------------------------------------- #
-from utils import get_frost_df, print_formatted
-
 varstr_dict= {
-        'air_temperature':'   Ta',
-        'wind_speed':'   FF',
-        'wind_from_direction':'   DD',
-        'sea_surface_wave_significant_height':'   Hs',
-        'sea_surface_wave_mean_period':' Tm02',
-        'sea_surface_wave_period_at_variance_spectral_density_maximum':'   Tp'
+        'air_temperature':'    Ta',
+        'wind_speed':'    FF',
+        'wind_from_direction':'    DD',
+        'sea_surface_wave_significant_height':'    Hs',
+        'sea_surface_wave_mean_period':'  Tm02',
+        'sea_surface_wave_period_at_variance_spectral_density_maximum':'    Tp'
         }
-
+t1 = time.time()
 df = get_frost_df(sd,ed,s,varstr_dict)
 print_formatted(df,s)
+t2 = time.time()
+deltat = t2-t1
+print('time used for retrieval:', f'{deltat:.2f}', 'seconds')
