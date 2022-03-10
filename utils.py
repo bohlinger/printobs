@@ -48,16 +48,18 @@ def call_frost_api(sdate,edate,nID,varstr_dict):
 
 def get_frost_df(r,varstr_dict):
     varstr_lst = list(varstr_dict.keys())
-    d = {}
-    length = len(r.json()['data'])
-    d['referenceTime'] = [r.json()['data'][t]['referenceTime'] for t in range(length)]
-    for v,i in zip(varstr_lst,range(len(varstr_lst))):
-        d[v] = [r.json()['data'][t]['observations'][i]['value']
-                for t in range(length)]
-    df = pd.DataFrame(d)
-    varstr_dict['referenceTime'] = 'time'
-    df = df.rename(columns=varstr_dict)
-    return df
+    alias_lst = [varstr_dict[e] for e in varstr_dict]
+    df = pd.json_normalize(r.json()['data'],
+                            ['observations'],
+                            ['referenceTime'])
+    df2 = df['referenceTime'].drop_duplicates().reset_index(drop=True)
+    for v in varstr_lst:
+        dftmp = df.loc[df['elementId'] == v]['value'].reset_index(drop=True)
+        df2 = pd.concat([df2, dftmp.reindex(df2.index)], axis=1)
+    for i in range(len(alias_lst)):
+        df2.rename(columns={ df2.columns[i]: alias_lst[i] },
+                   inplace = True)
+    return df2
 
 def print_formatted(df, nID):
     print('\n'.join(df.to_string(index = False).split('\n')[1:]))
