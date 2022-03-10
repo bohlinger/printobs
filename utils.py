@@ -41,6 +41,8 @@ def call_frost_api(sdate,edate,nID,varstr_dict):
                 'sources': ID,
                 'elements': varstr,
                 'referencetime': frost_reference_time,
+                'timeoffsets': 'default',
+                'levels': 'default'
                 }
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
