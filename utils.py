@@ -27,7 +27,7 @@ def make_frost_reference_time_period(sdate, edate):
                             edate.strftime(formatstr))
     return refstr
 
-def get_frost_df(sdate,edate,nID,varstr_dict):
+def call_frost_api(sdate,edate,nID,varstr_dict):
     varstr_lst = list(varstr_dict.keys())
     varstr = ','.join(varstr_lst)
     dotenv.load_dotenv()
@@ -42,12 +42,16 @@ def get_frost_df(sdate,edate,nID,varstr_dict):
                 'elements': varstr,
                 'referencetime': frost_reference_time,
                 }
-    r = requests.get(endpoint, parameters, auth=(client_id, client_id))
+    return requests.get(endpoint, parameters, auth=(client_id, client_id))
+
+def get_frost_df(r,varstr_dict):
+    varstr_lst = list(varstr_dict.keys())
     d = {}
     length = len(r.json()['data'])
     d['referenceTime'] = [r.json()['data'][t]['referenceTime'] for t in range(length)]
     for v,i in zip(varstr_lst,range(len(varstr_lst))):
-        d[v] = [r.json()['data'][t]['observations'][i]['value'] for t in range(length)]
+        d[v] = [r.json()['data'][t]['observations'][i]['value']
+                for t in range(length)]
     df = pd.DataFrame(d)
     varstr_dict['referenceTime'] = 'time'
     df = df.rename(columns=varstr_dict)
@@ -56,4 +60,4 @@ def get_frost_df(sdate,edate,nID,varstr_dict):
 def print_formatted(df, nID):
     print('\n'.join(df.to_string(index = False).split('\n')[1:]))
     print('\n'.join(df.to_string(index = False).split('\n')[0:1]))
-    print(nID)
+    print('--> ', nID, ' <--')
