@@ -53,12 +53,11 @@ def get_frost_df(r,varstr_dict):
                             ['observations'],
                             ['referenceTime'])
     df2 = df['referenceTime'].drop_duplicates().reset_index(drop=True)
+    df2 = df2.to_frame()
     for v in varstr_lst:
-        dftmp = df.loc[df['elementId'] == v]['value'].reset_index(drop=True)
+        dftmp = df.loc[df['elementId'] == v]['value'].reset_index(drop=True).to_frame()
+        dftmp = dftmp.rename(columns={ dftmp.columns[0]: varstr_dict[v] })
         df2 = pd.concat([df2, dftmp.reindex(df2.index)], axis=1)
-    for i in range(len(alias_lst)):
-        df2.rename(columns={ df2.columns[i]: alias_lst[i] },
-                   inplace = True)
     return df2
 
 def print_formatted(df, nID):
