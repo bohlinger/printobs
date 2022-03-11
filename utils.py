@@ -58,8 +58,8 @@ def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
 
 def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
     ID = insitu_dict[nID]['ID']
-    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
-    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
+    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
+    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
@@ -71,6 +71,12 @@ def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
 def get_frost_df(r,varstr_dict,v):
+    if v == 'v0':
+        return get_frost_df_v0(r,varstr_dict)
+    elif v == 'v1':
+        return get_frost_df_v1(r,varstr_dict)
+
+def get_frost_df_v0(r,varstr_dict):
     varstr_lst = list(varstr_dict.keys())
     alias_lst = [varstr_dict[e] for e in varstr_dict]
     df = pd.json_normalize(r.json()['data'],
@@ -83,6 +89,22 @@ def get_frost_df(r,varstr_dict,v):
         dftmp = dftmp.rename(columns={ dftmp.columns[0]: varstr_dict[v] })
         df2 = pd.concat([df2, dftmp.reindex(df2.index)], axis=1)
     return df2
+
+def get_frost_df_v1(r,varstr_dict):
+    # base df
+    df = pd.json_normalize(r.json()['data']['tseries'])
+    # df to be concatenated initialized with time
+    dfc = pd.json_normalize(r.json()
+      ['data']['tseries'][0]['observations'])['time'].to_frame()
+    for vn in varstr_dict:
+        idx = df['header.extra.element.id'][df['header.extra.element.id']==vn].index.to_list()
+        for i in idx:
+            dftmp = pd.json_normalize(r.json()\
+                    ['data']['tseries'][i]['observations'])\
+                    ['body.data'].to_frame()
+            dftmp = dftmp.rename(columns={ dftmp.columns[0]: varstr_dict[vn] })
+            dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
+    return dfc
 
 def print_formatted(df, nID):
     print('\n'.join(df.to_string(index = False).split('\n')[1:]))
