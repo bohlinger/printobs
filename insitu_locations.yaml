@@ -3,19 +3,19 @@
 ### oil rigs ###
 asgardb:
     operator: Equinor_Energy
-    ID: SN76958
+    ID: 76958
 
 aastahansteen:
     operator: Equinor_Energy
-    ID: SN77040
+    ID: 77040
 
 brage:
     operator: Wintershall_Dea_Norge
-    ID: SN76959
+    ID: 76959
 
 draugen:
     operator: OKEA
-    ID: SN76925
+    ID: 76925
 
 ekofiskL:
     operator: ConocoPhillips_Skandinavia
@@ -27,63 +27,63 @@ gjoa:
 
 goliat:
     operator: VarEnergi
-    ID: SN76956
+    ID: 76956
 
 grane:
     operator: Equinor_Energy
-    ID: SN76969
+    ID: 76969
 
 gudrun:
-    ID: SN77041
+    ID: 77041
 
 gullfaksc:
     operator: Equinor_Energy
-    ID: SN76923
+    ID: 76923
 
 heidrun:
     operator: Equinor_Energy
-    ID: SN76928
+    ID: 76928
 
 # d38 under /lustre/storeB/immutable/archive/projects/metproduction/DNMI_OFFSHORE/heimdal/d38/2022
 heimdal:
     operator: Equinor_Energy
-    ID: SN76932
+    ID: 76932
 
 johansverdrup:
     operator:
-    ID: SN20929
+    ID: 20929
 
 kvitebjorn:
     operator: Equinor_Energy
-    ID: SN76969
+    ID: 76969
 
 kristin:
     operator: Equinor_Energy
-    ID: SN76963
+    ID: 76963
 
 huldra: # not working
     operator: Equinor_Energy
-    ID: SN76962
+    ID: 76962
 
 njorda: # 2004-2016
     operator: Equinor_Energy
-    ID: SN76964
+    ID: 76964
 
 martinlingea: # a same as b
     operator:
-    ID: SN76915
+    ID: 76915
 
 martinlingeb:
     operator:
-    ID: SN76915
+    ID: 76915
 
 norne:
     operator: Equinor_Energy
-    ID: SN76930
+    ID: 76930
 
 ormenlange:
     operator: NorskeShell
-    ID: SN76933
+    ID: 76933
 
 oseberg:
     operator: NA
@@ -91,39 +91,39 @@ oseberg:
 
 osebergc:
     operator: NA
-    ID: SN76965
+    ID: 76965
 
 osebergsyd: # OsebergEast i Vegard's liste
     operator: NA
-    ID: SN76967
+    ID: 76967
 
 snorrea:
     operator: Equinor_Energy
-    ID: SN76935
+    ID: 76935
 
 snorreb:
     operator: Equinor_Energy
-    ID: SN76936
+    ID: 76936
 
 sleipnera:
     operator: Equinor_Energy
-    ID: SN76926
+    ID: 76926
 
 sleipnerb:
     operator: Equinor_Energy
-    ID: SN76961
+    ID: 76961
 
 statfjorda:
     operator: Equinor_Energy
-    ID: SN76922
+    ID: 76922
 
 statfjordb:
     operator: Equinor_Energy
-    ID: SN76934
+    ID: 76934
 
 trolla:
     operator: Equinor_Energy
-    ID: SN76931
+    ID: 76931
 
 trollb:
     operator: Equinor_Energy
@@ -131,7 +131,7 @@ trollb:
 
 trollc:
     operator: Equinor_Energy
-    ID: SN76937
+    ID: 76937
 
 ula:
     operator: Aker_BP
@@ -139,12 +139,13 @@ ula:
 
 valhall:
     operator: Aker_BP
-    ID: SN76939
+    #ID: 76939
+    ID: 76939
 
 veslefrikk:
     operator: Equinor_Energy
-    ID: SN76995
+    ID: 76995
 
 visund: # not working
     operator:
-    ID: SN76968
+    ID: 76968

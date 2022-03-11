@@ -27,16 +27,26 @@ def make_frost_reference_time_period(sdate, edate):
                             edate.strftime(formatstr))
     return refstr
 
-def call_frost_api(sdate,edate,nID,varstr_dict):
+def call_frost_api(sdate, edate, nID, varstr_dict, v):
     varstr_lst = list(varstr_dict.keys())
     varstr = ','.join(varstr_lst)
     dotenv.load_dotenv()
     client_id = os.getenv('CLIENT_ID', None)
+    frost_reference_time = make_frost_reference_time_period(sdate, edate)
     if client_id is None:
         print("No Frost CLIENT_ID given!")
-    ID = insitu_dict[nID]['ID']
-    frost_reference_time = make_frost_reference_time_period(sdate,edate)
-    endpoint = 'https://frost.met.no/observations/v0.jsonld'
+    if v == 'v0':
+        return call_frost_api_v0(nID, varstr,
+                                frost_reference_time,
+                                client_id)
+    elif v == 'v1':
+        return call_frost_api_v1(nID, varstr,
+                                frost_reference_time,
+                                client_id)
+
+def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
+    ID = 'SN' + str(insitu_dict[nID]['ID'])
+    endpoint = 'https://frost.met.no/observations/v0.jsonld' # v0
     parameters = {
                 'sources': ID,
                 'elements': varstr,
@@ -46,7 +56,21 @@ def call_frost_api(sdate,edate,nID,varstr_dict):
                 }
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
-def get_frost_df(r,varstr_dict):
+def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
+    ID = insitu_dict[nID]['ID']
+    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
+    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
+    parameters = {
+                'stationids': ID,
+                'elementids': varstr,
+                'time': frost_reference_time,
+                #'timeoffsets': 'default', # handled by filter
+                'levels': 0,
+                'incobs': 'true'
+                }
+    return requests.get(endpoint, parameters, auth=(client_id, client_id))
+
+def get_frost_df(r,varstr_dict,v):
     varstr_lst = list(varstr_dict.keys())
     alias_lst = [varstr_dict[e] for e in varstr_dict]
     df = pd.json_normalize(r.json()['data'],

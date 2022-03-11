@@ -19,8 +19,8 @@ parser.add_argument("-ed", metavar='enddate',
 parser.add_argument("-d", type=int, metavar='delta',
                     help="substracted hours from now (in lieu of sd & ed)")
 parser.add_argument("-s", metavar='station', help="station")
-parser.add_argument("-i", metavar='instrument',
-                    help="instrument")
+parser.add_argument("-i", metavar='instrument', help="instrument")
+parser.add_argument("-v", metavar='version', help="FROST API version")
 
 args = parser.parse_args()
 dargs = vars(args)
@@ -36,6 +36,7 @@ if args.d is not None:
 
 s = dargs.get('s','valhall')
 i = None
+v = dargs.get('v','v0')
 
 # -------------------------------------------------------------------- #
 varstr_dict= {
@@ -47,10 +48,10 @@ varstr_dict= {
         'sea_surface_wave_period_at_variance_spectral_density_maximum':'    Tp'
         }
 t1 = time.time()
-r = call_frost_api(sd,ed,s,varstr_dict)
+r = call_frost_api(sd,ed,s,varstr_dict,v)
 t2 = time.time()
 print('time used for api call:', f'{t2-t1:.2f}', 'seconds')
-df = get_frost_df(r,varstr_dict)
+df = get_frost_df(r,varstr_dict,v)
 print_formatted(df,s)
 t3 = time.time()
 print('time used:', f'{t3-t1:.2f}', 'seconds')
