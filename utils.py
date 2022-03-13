@@ -7,6 +7,9 @@ import dotenv
 import requests
 
 
+with open('variable_def.yaml', 'r') as file:
+    varstr_dict = yaml.safe_load(file)
+
 with open('insitu_locations.yaml', 'r') as file:
     insitu_dict = yaml.safe_load(file)
 
@@ -27,7 +30,7 @@ def make_frost_reference_time_period(sdate, edate):
                             edate.strftime(formatstr))
     return refstr
 
-def call_frost_api(sdate, edate, nID, varstr_dict, v):
+def call_frost_api(sdate, edate, nID, v):
     varstr_lst = list(varstr_dict.keys())
     varstr = ','.join(varstr_lst)
     dotenv.load_dotenv()
@@ -58,8 +61,8 @@ def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
 
 def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
     ID = insitu_dict[nID]['ID']
-    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
-    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
+    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
+    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
@@ -70,13 +73,13 @@ def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
                 }
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
-def get_frost_df(r,varstr_dict,v):
+def get_frost_df(r,v):
     if v == 'v0':
-        return get_frost_df_v0(r,varstr_dict)
+        return get_frost_df_v0(r)
     elif v == 'v1':
-        return get_frost_df_v1(r,varstr_dict)
+        return get_frost_df_v1(r)
 
-def get_frost_df_v0(r,varstr_dict):
+def get_frost_df_v0(r):
     varstr_lst = list(varstr_dict.keys())
     alias_lst = [varstr_dict[e] for e in varstr_dict]
     df = pd.json_normalize(r.json()['data'],
@@ -90,7 +93,7 @@ def get_frost_df_v0(r,varstr_dict):
         df2 = pd.concat([df2, dftmp.reindex(df2.index)], axis=1)
     return df2
 
-def get_frost_df_v1(r,varstr_dict):
+def get_frost_df_v1(r):
     # base df
     df = pd.json_normalize(r.json()['data']['tseries'])
     # df to be concatenated initialized with time

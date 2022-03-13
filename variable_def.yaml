@@ -1,0 +1,10 @@
+# variable definition:
+# - variables are being read and printed in order
+# - variables make use of the given abbreviations
+
+air_temperature: Ta
+wind_speed: FF
+wind_from_direction: DD
+sea_surface_wave_significant_height: Hs
+sea_surface_wave_mean_period: Tm02
+sea_surface_wave_period_at_variance_spectral_density_maximum: Tp

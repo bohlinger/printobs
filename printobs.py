@@ -39,19 +39,19 @@ i = None
 v = dargs.get('v','v0')
 
 # -------------------------------------------------------------------- #
-varstr_dict= {
-        'air_temperature':'    Ta',
-        'wind_speed':'    FF',
-        'wind_from_direction':'    DD',
-        'sea_surface_wave_significant_height':'    Hs',
-        'sea_surface_wave_mean_period':'  Tm02',
-        'sea_surface_wave_period_at_variance_spectral_density_maximum':'    Tp'
-        }
+#varstr_dict= {
+#        'air_temperature':'    Ta',
+#        'wind_speed':'    FF',
+#        'wind_from_direction':'    DD',
+#        'sea_surface_wave_significant_height':'    Hs',
+#        'sea_surface_wave_mean_period':'  Tm02',
+#        'sea_surface_wave_period_at_variance_spectral_density_maximum':'    Tp'
+#        }
 t1 = time.time()
-r = call_frost_api(sd,ed,s,varstr_dict,v)
+r = call_frost_api(sd,ed,s,v)
 t2 = time.time()
 print('time used for api call:', f'{t2-t1:.2f}', 'seconds')
-df = get_frost_df(r,varstr_dict,v)
+df = get_frost_df(r,v)
 print_formatted(df,s)
 t3 = time.time()
 print('time used:', f'{t3-t1:.2f}', 'seconds')
