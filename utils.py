@@ -61,8 +61,8 @@ def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
 
 def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
     ID = insitu_dict[nID]['ID']
-    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
-    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
+    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
+    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
