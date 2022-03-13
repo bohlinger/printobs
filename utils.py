@@ -61,8 +61,8 @@ def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
 
 def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
     ID = insitu_dict[nID]['ID']
-    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
-    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
+    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
+    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
@@ -110,6 +110,19 @@ def get_frost_df_v1(r):
     return dfc
 
 def print_formatted(df, nID):
-    print('\n'.join(df.to_string(index = False).split('\n')[1:]))
-    print('\n'.join(df.to_string(index = False).split('\n')[0:1]))
+    df = df.rename(columns={ df.columns[0]: '' })
+    dfstr = df.to_string(
+        formatters={
+                    "Hs": "{:,.1f}".format,
+                    "Tm02": "{:,.1f}".format,
+                    "TP": "{:,.1f}".format,
+                    "FF": "{:,.1f}".format,
+                    "DD": "{:,.1f}".format,
+                    "Ta": "{:,.1f}".format,
+                    '': lambda x: "{:%Y-%m-%d %H:%M UTC }".format(pd.to_datetime(x, unit="ns"))
+                    },
+        index = False).split('\n')
+    print('\n'.join(dfstr[0:1]))
+    print('\n'.join(dfstr[1:]))
+    print('\n'.join(dfstr[0:1]))
     print('--> ', nID, ' <--')
