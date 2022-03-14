@@ -5,6 +5,7 @@ import pandas as pd
 import yaml
 import dotenv
 import requests
+import numpy as np
 
 
 with open('variable_def.yaml', 'r') as file:
@@ -61,8 +62,8 @@ def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
 
 def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
     ID = insitu_dict[nID]['ID']
-    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
-    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
+    endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
+    #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
@@ -106,6 +107,7 @@ def get_frost_df_v1(r):
                     ['data']['tseries'][i]['observations'])\
                     ['body.data'].to_frame()
             dftmp = dftmp.rename(columns={ dftmp.columns[0]: varstr_dict[vn] })
+            dftmp[varstr_dict[vn]] = dftmp[varstr_dict[vn]].mask(dftmp[varstr_dict[vn]] < 0, np.nan)
             dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
     return dfc
 
@@ -115,9 +117,9 @@ def print_formatted(df, nID):
         formatters={
                     "Hs": "{:,.1f}".format,
                     "Tm02": "{:,.1f}".format,
-                    "TP": "{:,.1f}".format,
+                    "Tp": "{:,.1f}".format,
                     "FF": "{:,.1f}".format,
-                    "DD": "{:,.1f}".format,
+                    "DD": "{:,.0f}".format,
                     "Ta": "{:,.1f}".format,
                     '': lambda x: "{:%Y-%m-%d %H:%M UTC }".format(pd.to_datetime(x, unit="ns"))
                     },
