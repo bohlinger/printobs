@@ -106,8 +106,9 @@ def get_frost_df_v1(r):
             dftmp = pd.json_normalize(r.json()\
                     ['data']['tseries'][i]['observations'])\
                     ['body.data'].to_frame()
-            dftmp = dftmp.rename(columns={ dftmp.columns[0]: varstr_dict[vn] })
-            dftmp[varstr_dict[vn]] = dftmp[varstr_dict[vn]].mask(dftmp[varstr_dict[vn]] < 0, np.nan)
+            vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
+            dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns })
+            dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
             dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
     return dfc
 
