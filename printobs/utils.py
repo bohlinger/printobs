@@ -6,13 +6,14 @@ import yaml
 import dotenv
 import requests
 import numpy as np
+from pkg_resources import resource_stream
 
+def load_yaml(name):
+    return yaml.safe_load(
+            resource_stream(__name__,name))
 
-with open('variable_def.yaml', 'r') as file:
-    varstr_dict = yaml.safe_load(file)
-
-with open('insitu_locations.yaml', 'r') as file:
-    insitu_dict = yaml.safe_load(file)
+varstr_dict = load_yaml('variable_def.yaml')
+insitu_dict = load_yaml('insitu_locations.yaml')
 
 def parse_date(indate):
     if isinstance(indate, datetime):
