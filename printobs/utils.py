@@ -69,7 +69,7 @@ def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
                 'stationids': ID,
                 'elementids': varstr,
                 'time': frost_reference_time,
-                #'timeoffsets': 'default', # handled by filter
+                'timeoffsets': 'default', # handled by filter
                 'levels': 0,
                 'incobs': 'true'
                 }
@@ -115,14 +115,46 @@ def get_frost_df_v1(r):
 
 def print_formatted(df, nID):
     df = df.rename(columns={ df.columns[0]: '' })
+    # quick and irty formatting
+    # - need a smarter and more generic formatter
     dfstr = df.to_string(
         formatters={
-                    "Hs": "{:,.1f}".format,
-                    "Tm02": "{:,.1f}".format,
-                    "Tp": "{:,.1f}".format,
-                    "FF": "{:,.1f}".format,
-                    "DD": "{:,.0f}".format,
-                    "Ta": "{:,.1f}".format,
+                    "Hs_0": "{:,.1f}".format,
+                    "Hs_1": "{:,.1f}".format,
+                    "Hs_2": "{:,.1f}".format,
+                    "Hs_3": "{:,.1f}".format,
+                    "Hs_4": "{:,.1f}".format,
+                    #
+                    "Tm02_0": "{:,.1f}".format,
+                    "Tm02_1": "{:,.1f}".format,
+                    "Tm02_2": "{:,.1f}".format,
+                    "Tm02_3": "{:,.1f}".format,
+                    "Tm02_4": "{:,.1f}".format,
+                    #
+                    "Tp_0": "{:,.1f}".format,
+                    "Tp_1": "{:,.1f}".format,
+                    "Tp_2": "{:,.1f}".format,
+                    "Tp_3": "{:,.1f}".format,
+                    "Tp_4": "{:,.1f}".format,
+                    #
+                    "FF_0": "{:,.1f}".format,
+                    "FF_1": "{:,.1f}".format,
+                    "FF_2": "{:,.1f}".format,
+                    "FF_3": "{:,.1f}".format,
+                    "FF_4": "{:,.1f}".format,
+                    #
+                    "DD_0": "{:,.0f}".format,
+                    "DD_1": "{:,.0f}".format,
+                    "DD_2": "{:,.0f}".format,
+                    "DD_3": "{:,.0f}".format,
+                    "DD_4": "{:,.0f}".format,
+                    #
+                    "Ta_0": "{:,.1f}".format,
+                    "Ta_1": "{:,.1f}".format,
+                    "Ta_2": "{:,.1f}".format,
+                    "Ta_3": "{:,.1f}".format,
+                    "Ta_4": "{:,.1f}".format,
+                    #
                     '': lambda x: "{:%Y-%m-%d %H:%M UTC }".format(pd.to_datetime(x, unit="ns"))
                     },
         index = False).split('\n')
