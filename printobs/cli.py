@@ -3,7 +3,9 @@ import argparse
 from argparse import RawTextHelpFormatter
 from datetime import datetime, timedelta
 import time
-from .utils import parse_date, call_frost_api, get_frost_df, print_formatted
+from .utils import parse_date, call_frost_api
+from .utils import get_frost_df, print_formatted
+from .utils import print_available_locations
 
 
 def main():
@@ -35,17 +37,20 @@ def main():
     if args.d is not None:
         sd = parse_date(args.ed) - timedelta(hours=args.d)
 
-    s = dargs.get('s','valhall')
+    s = dargs.get('s')
     i = None
     v = dargs.get('v','v1')
 
 # -------------------------------------------------------------------- #
-
-    t1 = time.time()
-    r = call_frost_api(sd,ed,s,v)
-    t2 = time.time()
-    print('time used for api call:', f'{t2-t1:.2f}', 'seconds')
-    df = get_frost_df(r,v)
-    print_formatted(df,s)
-    t3 = time.time()
-    print('time used:', f'{t3-t1:.2f}', 'seconds')
+    if s is None:
+        # print available locations
+        print_available_locations()
+    else:
+        t1 = time.time()
+        r = call_frost_api(sd,ed,s,v)
+        t2 = time.time()
+        print('time used for api call:', f'{t2-t1:.2f}', 'seconds')
+        df = get_frost_df(r,v)
+        print_formatted(df,s)
+        t3 = time.time()
+        print('time used:', f'{t3-t1:.2f}', 'seconds')
