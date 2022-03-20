@@ -41,13 +41,17 @@ def call_frost_api(sdate, edate, nID, v):
     if client_id is None:
         print("No Frost CLIENT_ID given!")
     if v == 'v0':
-        return call_frost_api_v0(nID, varstr,
+        r = call_frost_api_v0(nID, varstr,
                                 frost_reference_time,
                                 client_id)
     elif v == 'v1':
-        return call_frost_api_v1(nID, varstr,
+        r = call_frost_api_v1(nID, varstr,
                                 frost_reference_time,
                                 client_id)
+    if r.status_code == 200:
+        return r
+    else:
+        print(r.json()['error'])
 
 def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
     ID = 'SN' + str(insitu_dict[nID]['ID'])
@@ -69,7 +73,7 @@ def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
                 'stationids': ID,
                 'elementids': varstr,
                 'time': frost_reference_time,
-                'timeoffsets': 'default', # handled by filter
+                #'timeoffsets': 'default', # handled by filter
                 'levels': 0,
                 'incobs': 'true'
                 }
