@@ -127,6 +127,7 @@ def sort_df(df):
     # get list of df element keys
     elst = list(df.keys())
     nelst = []
+    nelst.append(['time'])
     for va in alst:
         tmp = [elst[i] for i in range(len(elst)) if va in elst[i]]
         tmp.sort()
