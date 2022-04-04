@@ -17,6 +17,10 @@ draugen:
     operator: OKEA
     ID: 76925
 
+# owned by Odfjell Drilling and under contract for AkerBP
+deepseaNK: # DEEPSEA NORDKAPP
+    ID: 77043
+
 ekofiskL:
     operator: ConocoPhillips_Skandinavia
     ID:
@@ -97,6 +101,11 @@ osebergsyd: # OsebergEast i Vegard's liste
     operator: NA
     ID: 76967
 
+#  TEEKAY PETROJARL PRODUKTION AS Data kommer via BP
+#  Altera Infrastructure
+petrojarl: # PETROJARL KNARR ()
+    ID: 77027
+
 snorrea:
     operator: Equinor_Energy
     ID: 76935
@@ -149,3 +158,7 @@ veslefrikk:
 visund: # not working
     operator:
     ID: 76968
+
+yme:
+    operator: Repsol
+    ID: 76929

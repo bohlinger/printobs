@@ -117,6 +117,24 @@ def get_frost_df_v1(r):
             dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
     return dfc
 
+flatten = lambda l: [item for sublist in l for item in sublist]
+
+def sort_df(df):
+    # get list of aliases
+    alst = []
+    for vn in varstr_dict:
+        alst.append(varstr_dict[vn])
+    # get list of df element keys
+    elst = list(df.keys())
+    nelst = []
+    for va in alst:
+        tmp = [elst[i] for i in range(len(elst)) if va in elst[i]]
+        tmp.sort()
+        nelst.append(tmp)
+    # reorganize df according to sorted keys and return
+    nelst = flatten(nelst)
+    return df[nelst]
+
 def print_formatted(df, nID):
     df = df.rename(columns={ df.columns[0]: '' })
     # quick and irty formatting
