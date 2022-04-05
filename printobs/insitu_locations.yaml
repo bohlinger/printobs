@@ -106,6 +106,9 @@ osebergsyd: # OsebergEast i Vegard's liste
 petrojarl: # PETROJARL KNARR ()
     ID: 77027
 
+scarabeo8:
+    ID: 76999
+
 snorrea:
     operator: Equinor_Energy
     ID: 76935

@@ -103,6 +103,8 @@ def get_frost_df_v1(r):
     # base df
     df = pd.json_normalize(r.json()['data']['tseries'])
     # df to be concatenated initialized with time
+    # dfc3 = pd.json_normalize(r.json()['data']['tseries'])['header.extra.station.latitude'] # for stationary
+    # dfc3 = pd.json_normalize(r.json()['data']['tseries'][0]['observations'][0]['body'])['lat'] # for moving platform
     dfc = pd.json_normalize(r.json()
       ['data']['tseries'][0]['observations'])['time'].to_frame()
     for vn in varstr_dict:

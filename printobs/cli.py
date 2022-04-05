@@ -48,7 +48,7 @@ def main():
     sd = parse_date(dargs.get('sd',datetime.now() - timedelta(hours=12)))
 
     if args.d is not None:
-        sd = parse_date(args.ed) - timedelta(hours=args.d)
+        sd = parse_date(ed) - timedelta(hours=args.d)
 
     s = dargs.get('s')
     i = None
