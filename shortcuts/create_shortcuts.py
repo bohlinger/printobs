@@ -56,7 +56,7 @@ abbstat = [['asgardn','asgb'],['aastahansteen','aasta'],['brage','brg'],['drauge
 abbstat = np.array(abbstat)
 
 for i in range(0,len(abbstat)):
-    textfile.write('''\nalias {}='/vol/vvfelles/printobs/printobs -s {}'  '''.format(abbstat[i,0],abbstat[i,1]))
+    textfile.write('''\nalias {}='/vol/vvfelles/printobs/printobs -s {}'  '''.format(abbstat[i,1],abbstat[i,0]))
 
 
 
