@@ -3,10 +3,12 @@ import argparse
 from argparse import RawTextHelpFormatter
 from datetime import datetime, timedelta
 import time
+import os
 from .utils import parse_date, call_frost_api
 from .utils import get_frost_df, print_formatted
 from .utils import print_available_locations
 from .utils import sort_df
+from .utils import dump
 
 def main():
     parser = argparse.ArgumentParser(description="""
@@ -37,6 +39,12 @@ def main():
     parser.add_argument("-s", metavar='station', help="station")
     parser.add_argument("-i", metavar='instrument', help="instrument")
     parser.add_argument("-v", metavar='version', help="FROST API version")
+    parser.add_argument("-w", metavar='write',
+            help="choose write format, possible writers are:\n\
+            nc - netcdf\n\
+            p - pickle\n\
+            csv - csv")
+    parser.add_argument("-p", metavar='dump', help="path to the target file")
 
     args = parser.parse_args()
     dargs = vars(args)
@@ -53,6 +61,8 @@ def main():
     s = dargs.get('s')
     i = None
     v = dargs.get('v','v1')
+    w = dargs.get('w')
+    p = dargs.get('p')
 
 # -------------------------------------------------------------------- #
     if s is None:
@@ -69,3 +79,5 @@ def main():
         print_formatted(df,s)
         t3 = time.time()
         print('time used:', f'{t3-t1:.2f}', 'seconds')
+    if w is not None:
+        dump(df,p,w)

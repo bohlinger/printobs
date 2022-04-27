@@ -17,6 +17,7 @@ PyYAML = "^6.0"
 requests = "^2.27.1"
 python-dateutil = "^2.8.2"
 numpy = "^1.22.3"
+xarray = "^2022.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

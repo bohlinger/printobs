@@ -7,6 +7,7 @@ import dotenv
 import requests
 import numpy as np
 from pkg_resources import resource_stream
+import xarray as xr
 
 def load_yaml(name):
     return yaml.safe_load(
@@ -15,7 +16,12 @@ def load_yaml(name):
 varstr_dict = load_yaml('variable_def.yaml')
 insitu_dict = load_yaml('insitu_locations.yaml')
 
-def parse_date(indate):
+#def func(arg: arg_type, optarg: arg_type = default) -> return_type:
+
+def parse_date(indate: str) -> datetime:
+    """
+    parsing input date
+    """
     if isinstance(indate, datetime):
         return indate
     elif isinstance(indate, str):
@@ -24,7 +30,11 @@ def parse_date(indate):
         print('Not able to parse input return as is')
         return indate
 
-def make_frost_reference_time_period(sdate, edate):
+def make_frost_reference_time_period(\
+    sdate: datetime, edate: datetime) -> str:
+    """
+    create special time format for frost call
+    """
     sdate = parse_date(sdate)
     edate = parse_date(edate)
     formatstr = '%Y-%m-%dT%H:%M:00.000Z'
@@ -32,7 +42,12 @@ def make_frost_reference_time_period(sdate, edate):
                             edate.strftime(formatstr))
     return refstr
 
-def call_frost_api(sdate, edate, nID, v):
+def call_frost_api(\
+    sdate: datetime, edate: datetime,\
+    nID: str, v: str) -> 'requests.models.Response':
+    """
+    make frost api call
+    """
     varstr_lst = list(varstr_dict.keys())
     varstr = ','.join(varstr_lst)
     dotenv.load_dotenv()
@@ -53,7 +68,12 @@ def call_frost_api(sdate, edate, nID, v):
     else:
         print(r.json()['error'])
 
-def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
+def call_frost_api_v0(\
+    nID: str, varstr: str,frost_reference_time: str, client_id: str)\
+    -> 'requests.models.Response':
+    """
+    frost call, retrieve data from frost v0
+    """
     ID = 'SN' + str(insitu_dict[nID]['ID'])
     endpoint = 'https://frost.met.no/observations/v0.jsonld' # v0
     parameters = {
@@ -65,7 +85,12 @@ def call_frost_api_v0(nID, varstr, frost_reference_time, client_id):
                 }
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
-def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
+def call_frost_api_v1(\
+    nID: str, varstr: str,frost_reference_time: str, client_id: str)\
+    -> 'requests.models.Response':
+    """
+    frost call, retrieve data from frost v1
+    """
     ID = insitu_dict[nID]['ID']
     endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
@@ -79,13 +104,21 @@ def call_frost_api_v1(nID, varstr, frost_reference_time, client_id):
                 }
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
-def get_frost_df(r,v):
+def get_frost_df(r: 'requests.models.Response',v: str)\
+    -> 'pandas.core.frame.DataFrame':
+    """
+    retrieve frost data as pandas dataframe
+    """
     if v == 'v0':
         return get_frost_df_v0(r)
     elif v == 'v1':
         return get_frost_df_v1(r)
 
-def get_frost_df_v0(r):
+def get_frost_df_v0(r: 'requests.models.Response')\
+    -> 'pandas.core.frame.DataFrame':
+    """
+    create pandas dataframe from frost call for v0
+    """
     varstr_lst = list(varstr_dict.keys())
     alias_lst = [varstr_dict[e] for e in varstr_dict]
     df = pd.json_normalize(r.json()['data'],
@@ -99,7 +132,11 @@ def get_frost_df_v0(r):
         df2 = pd.concat([df2, dftmp.reindex(df2.index)], axis=1)
     return df2
 
-def get_frost_df_v1(r):
+def get_frost_df_v1(r: 'requests.models.Response')\
+    -> 'pandas.core.frame.DataFrame':
+    """
+    create pandas dataframe from frost call for v1
+    """
     # base df
     df = pd.json_normalize(r.json()['data']['tseries'])
     # df to be concatenated initialized with time
@@ -121,7 +158,11 @@ def get_frost_df_v1(r):
 
 flatten = lambda l: [item for sublist in l for item in sublist]
 
-def sort_df(df):
+def sort_df(df: 'pandas.core.frame.DataFrame')\
+    -> 'pandas.core.frame.DataFrame':
+    """
+    sort dataframe according to instrument number and rename accordingly
+    """
     # get list of aliases
     alst = []
     for vn in varstr_dict:
@@ -138,7 +179,10 @@ def sort_df(df):
     nelst = flatten(nelst)
     return df[nelst]
 
-def print_formatted(df, nID):
+def print_formatted(df: 'pandas.core.frame.DataFrame', nID: str):
+    """
+    print formatted output of retrieved dataframe to screen
+    """
     df = df.rename(columns={ df.columns[0]: '' })
     # quick and irty formatting
     # - need a smarter and more generic formatter
@@ -189,6 +233,9 @@ def print_formatted(df, nID):
     print('--> ', nID, ' <--')
 
 def print_available_locations():
+    """
+    print available offshore locations
+    """
     l = list(range(1,len(insitu_dict.keys())+1))
     dfc = pd.DataFrame(l)
     dfc = dfc.rename(columns={ dfc.columns[0]: '' })
@@ -204,3 +251,15 @@ def print_available_locations():
     print('Info:')
     print('above shown location aliases can be customized in insitu_locations.yaml')
     print('----------------------')
+
+def dump(df: 'pandas.core.frame.DataFrame', ptf: str, f: str):
+    """
+    write retrieved data to file
+    """
+    if f == 'nc':
+        ds = df.to_xarray()
+        ds.to_netcdf(ptf)
+    elif f == 'p':
+        df.to_pickle(ptf)
+    elif f == 'csv':
+        df.to_csv(ptf)
