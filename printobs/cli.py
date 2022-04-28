@@ -44,7 +44,7 @@ def main():
             nc - netcdf\n\
             p - pickle\n\
             csv - csv")
-    parser.add_argument("-p", metavar='dump', help="path to the target file")
+    parser.add_argument("-p", metavar='path', help="path to the target file")
 
     args = parser.parse_args()
     dargs = vars(args)
