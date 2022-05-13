@@ -193,36 +193,42 @@ def print_formatted(df: 'pandas.core.frame.DataFrame', nID: str):
                     "Hs_2": "{:,.1f}".format,
                     "Hs_3": "{:,.1f}".format,
                     "Hs_4": "{:,.1f}".format,
+                    "Hs_5": "{:,.1f}".format,
                     #
                     "Tm02_0": "{:,.1f}".format,
                     "Tm02_1": "{:,.1f}".format,
                     "Tm02_2": "{:,.1f}".format,
                     "Tm02_3": "{:,.1f}".format,
                     "Tm02_4": "{:,.1f}".format,
+                    "Tm02_5": "{:,.1f}".format,
                     #
                     "Tp_0": "{:,.1f}".format,
                     "Tp_1": "{:,.1f}".format,
                     "Tp_2": "{:,.1f}".format,
                     "Tp_3": "{:,.1f}".format,
                     "Tp_4": "{:,.1f}".format,
+                    "Tp_5": "{:,.1f}".format,
                     #
                     "FF_0": "{:,.1f}".format,
                     "FF_1": "{:,.1f}".format,
                     "FF_2": "{:,.1f}".format,
                     "FF_3": "{:,.1f}".format,
                     "FF_4": "{:,.1f}".format,
+                    "FF_5": "{:,.1f}".format,
                     #
                     "DD_0": "{:,.0f}".format,
                     "DD_1": "{:,.0f}".format,
                     "DD_2": "{:,.0f}".format,
                     "DD_3": "{:,.0f}".format,
                     "DD_4": "{:,.0f}".format,
+                    "DD_5": "{:,.0f}".format,
                     #
                     "Ta_0": "{:,.1f}".format,
                     "Ta_1": "{:,.1f}".format,
                     "Ta_2": "{:,.1f}".format,
                     "Ta_3": "{:,.1f}".format,
                     "Ta_4": "{:,.1f}".format,
+                    "Ta_5": "{:,.1f}".format,
                     #
                     '': lambda x: "{:%Y-%m-%d %H:%M UTC }".format(pd.to_datetime(x, unit="ns"))
                     },

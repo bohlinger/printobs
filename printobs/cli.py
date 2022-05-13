@@ -70,12 +70,14 @@ def main():
         print_available_locations()
     else:
         t1 = time.time()
+        # api call
         r = call_frost_api(sd,ed,s,v)
         t2 = time.time()
         print('time used for api call:', f'{t2-t1:.2f}', 'seconds')
         df = get_frost_df(r,v)
         # reorganize df
         df = sort_df(df)
+        # print to screen
         print_formatted(df,s)
         t3 = time.time()
         print('time used:', f'{t3-t1:.2f}', 'seconds')
