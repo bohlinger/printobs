@@ -1,6 +1,10 @@
 --- # information on in-situ locations
 
 ### oil rigs ###
+asgarda:
+    operator: Equinor_Energy
+    ID: 76958
+
 asgardb:
     operator: Equinor_Energy
     ID: 76958

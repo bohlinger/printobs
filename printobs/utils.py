@@ -151,10 +151,31 @@ def get_frost_df_v1(r: 'requests.models.Response')\
                     ['data']['tseries'][i]['observations'])\
                     ['body.data'].to_frame()
             vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
+            #vns = vns + ' (' + str(df['header.extra.level.level'][i]) + 'm)'
             dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns })
             dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
             dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
     return dfc
+
+def get_frost_df_add_row_info(r: 'requests.models.Response')\
+    -> 'pandas.core.frame.DataFrame':
+    df = pd.json_normalize(r.json()['data']['tseries'])
+    dfc = df[['header.extra.level.level']]
+    dfc = dfc.rename(columns={ 'header.extra.level.level': 'HAMSL [m] (repr)' })
+    # repr for represented height
+    # add also values for actual height
+    return dfc
+
+def get_element_id_order(r: 'requests.models.Response')\
+    -> list:
+    df = pd.json_normalize(r.json()['data']['tseries'])
+    idx_dict = {}
+    idx_lst = []
+    for vn in varstr_dict:
+        idx = df['header.extra.element.id'][df['header.extra.element.id']==vn].index.to_list()
+        idx_dict[vn] = idx
+        idx_lst.append(idx)
+    return idx_dict, flatten(idx_lst)
 
 flatten = lambda l: [item for sublist in l for item in sublist]
 
@@ -179,51 +200,100 @@ def sort_df(df: 'pandas.core.frame.DataFrame')\
     nelst = flatten(nelst)
     return df[nelst]
 
-def print_formatted(df: 'pandas.core.frame.DataFrame', nID: str):
-    """
-    print formatted output of retrieved dataframe to screen
-    """
-    df = df.rename(columns={ df.columns[0]: '' })
-    # quick and irty formatting
-    # - need a smarter and more generic formatter
-    dfstr = df.to_string(
-        formatters={
-                    "Hs_0": "{:,.1f}".format,
+formatters = {
+                    #"Hs_0": "{:,.1f}".format,
+                    "Hs_0": "{:7.1f}".format,
                     "Hs_1": "{:,.1f}".format,
                     "Hs_2": "{:,.1f}".format,
                     "Hs_3": "{:,.1f}".format,
                     "Hs_4": "{:,.1f}".format,
                     "Hs_5": "{:,.1f}".format,
                     #
-                    "Tm02_0": "{:,.1f}".format,
+                    "Tm02_0": "{:10.1f}".format,
                     "Tm02_1": "{:,.1f}".format,
                     "Tm02_2": "{:,.1f}".format,
                     "Tm02_3": "{:,.1f}".format,
                     "Tm02_4": "{:,.1f}".format,
                     "Tm02_5": "{:,.1f}".format,
                     #
-                    "Tp_0": "{:,.1f}".format,
+                    "Tp_0": "{:7.1f}".format,
                     "Tp_1": "{:,.1f}".format,
                     "Tp_2": "{:,.1f}".format,
                     "Tp_3": "{:,.1f}".format,
                     "Tp_4": "{:,.1f}".format,
                     "Tp_5": "{:,.1f}".format,
                     #
-                    "FF_0": "{:,.1f}".format,
+                    "FF_0": "{:7.1f}".format,
                     "FF_1": "{:,.1f}".format,
                     "FF_2": "{:,.1f}".format,
                     "FF_3": "{:,.1f}".format,
                     "FF_4": "{:,.1f}".format,
                     "FF_5": "{:,.1f}".format,
                     #
-                    "DD_0": "{:,.0f}".format,
+                    "DD_0": "{:7.0f}".format,
                     "DD_1": "{:,.0f}".format,
                     "DD_2": "{:,.0f}".format,
                     "DD_3": "{:,.0f}".format,
                     "DD_4": "{:,.0f}".format,
                     "DD_5": "{:,.0f}".format,
                     #
-                    "Ta_0": "{:,.1f}".format,
+                    "Ta_0": "{:7.1f}".format,
+                    "Ta_1": "{:,.1f}".format,
+                    "Ta_2": "{:,.1f}".format,
+                    "Ta_3": "{:,.1f}".format,
+                    "Ta_4": "{:,.1f}".format,
+                    "Ta_5": "{:,.1f}".format,
+                    }
+
+def print_formatted(
+    df: 'pandas.core.frame.DataFrame',
+    dfstr_add_info: 'pandas.core.frame.DataFrame',
+    nID: str):
+    """
+    print formatted output of retrieved dataframe to screen
+    """
+    df = df.rename(columns={ df.columns[0]: '' })
+    # quick and dirty formatting
+    # - need a smarter and more generic formatter
+    dfstr = df.to_string(
+        formatters = {
+                    #"Hs_0": "{:,.1f}".format,
+                    "Hs_0": "{:7.1f}".format,
+                    "Hs_1": "{:,.1f}".format,
+                    "Hs_2": "{:,.1f}".format,
+                    "Hs_3": "{:,.1f}".format,
+                    "Hs_4": "{:,.1f}".format,
+                    "Hs_5": "{:,.1f}".format,
+                    #
+                    "Tm02_0": "{:7.1f}".format,
+                    "Tm02_1": "{:,.1f}".format,
+                    "Tm02_2": "{:,.1f}".format,
+                    "Tm02_3": "{:,.1f}".format,
+                    "Tm02_4": "{:,.1f}".format,
+                    "Tm02_5": "{:,.1f}".format,
+                    #
+                    "Tp_0": "{:7.1f}".format,
+                    "Tp_1": "{:,.1f}".format,
+                    "Tp_2": "{:,.1f}".format,
+                    "Tp_3": "{:,.1f}".format,
+                    "Tp_4": "{:,.1f}".format,
+                    "Tp_5": "{:,.1f}".format,
+                    #
+                    "FF_0": "{:7.1f}".format,
+                    "FF_1": "{:,.1f}".format,
+                    "FF_2": "{:,.1f}".format,
+                    "FF_3": "{:,.1f}".format,
+                    "FF_4": "{:,.1f}".format,
+                    "FF_5": "{:,.1f}".format,
+                    #
+                    "DD_0": "{:7.0f}".format,
+                    "DD_1": "{:,.0f}".format,
+                    "DD_2": "{:,.0f}".format,
+                    "DD_3": "{:,.0f}".format,
+                    "DD_4": "{:,.0f}".format,
+                    "DD_5": "{:,.0f}".format,
+                    #
+                    "Ta_0": "{:7.1f}".format,
                     "Ta_1": "{:,.1f}".format,
                     "Ta_2": "{:,.1f}".format,
                     "Ta_3": "{:,.1f}".format,
@@ -236,7 +306,44 @@ def print_formatted(df: 'pandas.core.frame.DataFrame', nID: str):
     print('\n'.join(dfstr[0:1]))
     print('\n'.join(dfstr[1:]))
     print('\n'.join(dfstr[0:1]))
+    #print(' '*22+'\n'.join(dfstr_add_info[1:]))
+    print('\n'.join(dfstr_add_info[1:]))
     print('--> ', nID, ' <--')
+
+def get_add_info(
+    r: 'requests.models.Response',
+    df: 'pandas.core.frame.DataFrame',
+    dfi: 'pandas.core.frame.DataFrame',
+    ):
+    # get order
+    _,idx_lst = get_element_id_order(r)
+    # get variable df
+    df = df.rename(columns={ df.columns[0]: '' })
+    tmpdf = df[df['']==df[''][0]]
+    # get df with additional info
+    dfikeys = list(dfi.keys())
+    dfi = dfi.transpose().reset_index()[idx_lst]
+    dfi.insert(loc=0, column='time', value='')
+    # rename '' to time for sorting
+    tmpdf = tmpdf.rename(columns={ tmpdf.columns[0]: 'time' })
+    # rename dfi columns according to df columns
+    for idx, item in enumerate(tmpdf.keys()):
+        dfi = dfi.rename(columns={ dfi.columns[idx]: item })
+    tmpdf = sort_df(tmpdf)
+    dfi = sort_df(dfi)
+    dfi['time'] = tmpdf['time']
+    dfc = pd.concat([tmpdf,dfi])
+    dfc = dfc.reset_index()[1:2].drop(columns='index')
+    #dfc = dfc.drop(columns='time').reset_index()[1:2]
+    #dfc['index'] = dfikeys[0]
+    #dfc = dfc.rename(columns = {'index':''})
+    for key in dfc.keys():
+        #if key != 'index':
+        if key != 'time':
+            dfc[key]=dfc[key].astype(float)
+    #dfc2 = dfc.drop(columns={'index'})
+    #dfstr = dfc2.to_string(formatters=formatters,index=False).split('\n')
+    return dfc
 
 def print_available_locations():
     """
