@@ -157,7 +157,7 @@ def get_frost_df_v1(r: 'requests.models.Response')\
             dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
     return dfc
 
-def get_frost_df_add_row_info(r: 'requests.models.Response')\
+def get_frost_df_info(r: 'requests.models.Response')\
     -> 'pandas.core.frame.DataFrame':
     df = pd.json_normalize(r.json()['data']['tseries'])
     dfc = df[['header.extra.level.level']]
@@ -200,7 +200,7 @@ def sort_df(df: 'pandas.core.frame.DataFrame')\
     nelst = flatten(nelst)
     return df[nelst]
 
-formatters = {
+formatdict = {
                     #"Hs_0": "{:,.1f}".format,
                     "Hs_0": "{:7.1f}".format,
                     "Hs_1": "{:,.1f}".format,
@@ -209,7 +209,7 @@ formatters = {
                     "Hs_4": "{:,.1f}".format,
                     "Hs_5": "{:,.1f}".format,
                     #
-                    "Tm02_0": "{:10.1f}".format,
+                    "Tm02_0": "{:7.1f}".format,
                     "Tm02_1": "{:,.1f}".format,
                     "Tm02_2": "{:,.1f}".format,
                     "Tm02_3": "{:,.1f}".format,
@@ -245,12 +245,10 @@ formatters = {
                     "Ta_5": "{:,.1f}".format,
                     }
 
-def print_formatted(
-    df: 'pandas.core.frame.DataFrame',
-    dfstr_add_info: 'pandas.core.frame.DataFrame',
-    nID: str):
+def format_df(df: 'pandas.core.frame.DataFrame')\
+    -> list:
     """
-    print formatted output of retrieved dataframe to screen
+    format data dataframe
     """
     df = df.rename(columns={ df.columns[0]: '' })
     # quick and dirty formatting
@@ -303,18 +301,38 @@ def print_formatted(
                     '': lambda x: "{:%Y-%m-%d %H:%M UTC }".format(pd.to_datetime(x, unit="ns"))
                     },
         index = False).split('\n')
+    return dfstr
+
+def format_info_df(
+    df: 'pandas.core.frame.DataFrame',
+    fdf:list,
+    df_info: 'pandas.core.frame.DataFrame'
+    )\
+    -> str:
+    """
+    format data dataframe of extra info
+    """
+    print(df.keys())
+    print('here')
+    print(fdf[0])
+    print('here')
+    fstr = fdf[0]
+    return df_info
+
+def print_formatted(dfstr: list, dfstr_info: str, nID: str):
+    """
+    print formatted output of retrieved dataframe to screen
+    """
     print('\n'.join(dfstr[0:1]))
     print('\n'.join(dfstr[1:]))
     print('\n'.join(dfstr[0:1]))
-    #print(' '*22+'\n'.join(dfstr_add_info[1:]))
-    print('\n'.join(dfstr_add_info[1:]))
     print('--> ', nID, ' <--')
 
-def get_add_info(
+def get_info_df(
     r: 'requests.models.Response',
     df: 'pandas.core.frame.DataFrame',
     dfi: 'pandas.core.frame.DataFrame',
-    ):
+    ) -> 'pandas.core.frame.DataFrame':
     # get order
     _,idx_lst = get_element_id_order(r)
     # get variable df
@@ -334,15 +352,10 @@ def get_add_info(
     dfi['time'] = tmpdf['time']
     dfc = pd.concat([tmpdf,dfi])
     dfc = dfc.reset_index()[1:2].drop(columns='index')
-    #dfc = dfc.drop(columns='time').reset_index()[1:2]
-    #dfc['index'] = dfikeys[0]
-    #dfc = dfc.rename(columns = {'index':''})
     for key in dfc.keys():
         #if key != 'index':
         if key != 'time':
             dfc[key]=dfc[key].astype(float)
-    #dfc2 = dfc.drop(columns={'index'})
-    #dfstr = dfc2.to_string(formatters=formatters,index=False).split('\n')
     return dfc
 
 def print_available_locations():

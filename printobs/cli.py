@@ -4,10 +4,10 @@ from argparse import RawTextHelpFormatter
 from datetime import datetime, timedelta
 import time
 import os
-from .utils import get_frost_df_add_row_info, parse_date, call_frost_api
+from .utils import get_frost_df_info, parse_date, call_frost_api
 from .utils import get_frost_df, print_formatted
 from .utils import print_available_locations
-from .utils import get_add_info
+from .utils import get_info_df, format_df, format_info_df
 from .utils import sort_df
 from .utils import dump
 
@@ -76,13 +76,16 @@ def main():
         t2 = time.time()
         print('time used for api call:', f'{t2-t1:.2f}', 'seconds')
         df = get_frost_df(r,v)
-        dfi = get_frost_df_add_row_info(r)
-        dfstr_add_info = get_add_info(r,df,dfi)
-        print(dfstr_add_info)
+        dfi = get_frost_df_info(r)
+        df_info = get_info_df(r,df,dfi)
         # reorganize df
         df = sort_df(df)
+        # format data for output
+        fdf = format_df(df)
+        # format info df
+        fdf_info = format_info_df(df,fdf,df_info)
         # print to screen
-        print_formatted(df,dfstr_add_info,s)
+        print_formatted(fdf,fdf_info,s)
         t3 = time.time()
         print('time used:', f'{t3-t1:.2f}', 'seconds')
     if w is not None:
