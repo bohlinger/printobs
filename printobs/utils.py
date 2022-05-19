@@ -200,51 +200,6 @@ def sort_df(df: 'pandas.core.frame.DataFrame')\
     nelst = flatten(nelst)
     return df[nelst]
 
-formatdict = {
-                    #"Hs_0": "{:,.1f}".format,
-                    "Hs_0": "{:7.1f}".format,
-                    "Hs_1": "{:,.1f}".format,
-                    "Hs_2": "{:,.1f}".format,
-                    "Hs_3": "{:,.1f}".format,
-                    "Hs_4": "{:,.1f}".format,
-                    "Hs_5": "{:,.1f}".format,
-                    #
-                    "Tm02_0": "{:7.1f}".format,
-                    "Tm02_1": "{:,.1f}".format,
-                    "Tm02_2": "{:,.1f}".format,
-                    "Tm02_3": "{:,.1f}".format,
-                    "Tm02_4": "{:,.1f}".format,
-                    "Tm02_5": "{:,.1f}".format,
-                    #
-                    "Tp_0": "{:7.1f}".format,
-                    "Tp_1": "{:,.1f}".format,
-                    "Tp_2": "{:,.1f}".format,
-                    "Tp_3": "{:,.1f}".format,
-                    "Tp_4": "{:,.1f}".format,
-                    "Tp_5": "{:,.1f}".format,
-                    #
-                    "FF_0": "{:7.1f}".format,
-                    "FF_1": "{:,.1f}".format,
-                    "FF_2": "{:,.1f}".format,
-                    "FF_3": "{:,.1f}".format,
-                    "FF_4": "{:,.1f}".format,
-                    "FF_5": "{:,.1f}".format,
-                    #
-                    "DD_0": "{:7.0f}".format,
-                    "DD_1": "{:,.0f}".format,
-                    "DD_2": "{:,.0f}".format,
-                    "DD_3": "{:,.0f}".format,
-                    "DD_4": "{:,.0f}".format,
-                    "DD_5": "{:,.0f}".format,
-                    #
-                    "Ta_0": "{:7.1f}".format,
-                    "Ta_1": "{:,.1f}".format,
-                    "Ta_2": "{:,.1f}".format,
-                    "Ta_3": "{:,.1f}".format,
-                    "Ta_4": "{:,.1f}".format,
-                    "Ta_5": "{:,.1f}".format,
-                    }
-
 def format_df(df: 'pandas.core.frame.DataFrame')\
     -> list:
     """
@@ -306,27 +261,46 @@ def format_df(df: 'pandas.core.frame.DataFrame')\
 def format_info_df(
     df: 'pandas.core.frame.DataFrame',
     fdf:list,
-    df_info: 'pandas.core.frame.DataFrame'
+    df_info: 'pandas.core.frame.DataFrame',
+    info_lst:list,
     )\
     -> str:
     """
     format data dataframe of extra info
     """
-    print(df.keys())
-    print('here')
-    print(fdf[0])
-    print('here')
     fstr = fdf[0]
-    return df_info
+    klst = list(df.keys())
+    klst.remove('time')
+    for n,key in enumerate(klst):
+        idx = fstr.index(key)
+        if n == 0:
+            rstr = idx * " " + key
+            vstr = info_lst[0]\
+                    + (idx-len(info_lst[0])) * " "\
+                    + len(key) * " "
+        else:
+            rstr += (idx-len(rstr))* " " + key
+            val = df_info[key].values[0]
+            if np.isnan(val) or val == 0:
+                vstr += (idx-len(vstr))* " " + len(key)* " "
+            else:
+                template = "{:" + str(len(key)) + ".1f}"
+                valstr = template.format(val)
+                vstr += (idx-len(vstr))* " " + valstr
+    return vstr
 
 def print_formatted(dfstr: list, dfstr_info: str, nID: str):
     """
     print formatted output of retrieved dataframe to screen
     """
+    print('')
     print('\n'.join(dfstr[0:1]))
     print('\n'.join(dfstr[1:]))
     print('\n'.join(dfstr[0:1]))
+    print('')
+    print(dfstr_info)
     print('--> ', nID, ' <--')
+    print('')
 
 def get_info_df(
     r: 'requests.models.Response',

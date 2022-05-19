@@ -83,7 +83,7 @@ def main():
         # format data for output
         fdf = format_df(df)
         # format info df
-        fdf_info = format_info_df(df,fdf,df_info)
+        fdf_info = format_info_df(df,fdf,df_info,['Valid Height [m]'])
         # print to screen
         print_formatted(fdf,fdf_info,s)
         t3 = time.time()
