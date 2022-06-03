@@ -14,9 +14,46 @@ def load_yaml(name):
             resource_stream(__name__,name))
 
 varstr_dict = load_yaml('variable_def.yaml')
+model_dict = load_yaml('model_specs.yaml')
 insitu_dict = load_yaml('insitu_locations.yaml')
 
 #def func(arg: arg_type, optarg: arg_type = default) -> return_type:
+
+def haversine(lonp, latp, lonm, latm):
+    """
+    Calculate the great circle distance between two points
+    on the earth (specified in decimal degrees)
+
+    All args must be of equal length.
+
+    """
+    lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = ( np.sin(dlat/2.0)**2
+        + np.cos(lat1)
+        * np.cos(lat2)
+        * np.sin(dlon/2.0)**2 )
+    c = 2 * np.arcsin(np.sqrt(a))
+    km = 6367 * c
+    return km
+
+def find_nearest_coords(ds_model, nID):
+    """
+    Find nearest grid cell and retrieve values
+    """
+
+    dx = haversine(latp, lonp, latm, lonm)
+    gridlatmin = dx.where(dx == dx.min(), drop=True).rlat
+    gridlonmin = dx.where(dx == dx.min(), drop=True).rlon
+    return gridlonmin, gridlatmin
+
+def extract_model_ts(ds_model, nID):
+    return
+
+ for i in range(len(date_list)):
+        df[variable][i] = ds[variable].sel(
+            rlat=rlat, rlon=rlon).loc[date_list[i]].values[0][0]
 
 def parse_date(indate: str) -> datetime:
     """

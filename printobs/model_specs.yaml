@@ -1,0 +1,58 @@
+--- # wave model specifications
+
+mwam4:
+    vardef:
+        Hs: hs
+        time: time
+        Tp: tp
+        Tm10: tmp
+        Tm01: tm1
+        Tm02: tm2
+        Mdir: thq
+        Pdir: Pdir
+        lons: longitude
+        lats: latitude
+    path_template: "https://thredds.met.no/thredds/dodsC/\
+                    fou-hi/mywavewam4archive/%Y/%m/%d/"
+    file_template: "MyWave_wam4_WAVE_%Y%m%dT%HZ.nc"
+    init_times: [0,6,12,18]
+    init_step: 6
+    leadtimes: [0,6,12,18,24,36,48,60]
+    grid_date: 2020-01-01 00:00:00
+
+ecwam:
+    vardef:
+        Hs: significant_wave_height
+        Mdir: wave_direction
+        Tp: peak_wave_period
+        Tm02: mean_wave_period
+        time: time
+        lons: longitude
+        lats: latitude
+    path_template: "/lustre/storeB/project/metproduction/products/ecmwf/nc/"
+    file_template: "ec_ocean_wave_%Y%m%dT%H00Z.nc"
+    init_times: [0,12]
+    init_step: 12
+    leadtimes: [0,6,12,18,24,36,48,60]
+    proj4: "+proj=longlat +a=6367470 +e=0 +no_defs"
+
+ww3_4km:
+    vardef:
+        Hs: hs
+        time: time
+        Mdir: dir
+        Pdir: dp
+        Fp: fp
+        Tm01: t01
+        Tm02: t02
+        lons: longitude
+        lats: latitude
+    path_template: "https://thredds.met.no/thredds/dodsC/ww3_4km_archive_files/%Y/%m/%d/"
+    file_template: ww3_4km_%Y%m%dT%HZ.nc
+    init_times: [0,6,12,18]
+    init_step: 6
+    leadtimes: [0,6,12,18,24,36,48,60]
+    _FillValue: 9.96921e+36
+    proj4: "+proj=ob_tran +o_proj=longlat +lon_0=-40
+            +o_lat_p=22 +R=6.371e+06 +no_defs"
+    grid_date: 2021-11-16 00:00:00
