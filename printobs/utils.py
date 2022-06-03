@@ -296,7 +296,7 @@ def format_info_df(
                 vstr += (idx-len(vstr))* " " + valstr
     return vstr
 
-def print_formatted(dfstr: list, nID: str = None, dfstr_info: str = None):
+def print_formatted(dfstr: list, dfstr_info: str = None):
     """
     print formatted output of retrieved dataframe to screen
     """
@@ -307,8 +307,20 @@ def print_formatted(dfstr: list, nID: str = None, dfstr_info: str = None):
     print('')
     if dfstr_info is not None:
         print(dfstr_info)
-    print('--> ', nID, ' <--')
     print('')
+
+def print_info(r: 'requests.models.Response',nID: str = None):
+    df = pd.json_normalize(r.json()['data']['tseries'])
+    lon = float(\
+            df['header.extra.station.location']\
+            [0][0]\
+            ['value']['longitude'])
+    lat = float(\
+            df['header.extra.station.location']\
+            [0][0]\
+            ['value']['latitude'])
+    print('--> ', nID, ' <--')
+    print("Location (i.e. sensor #0): {:.2f}E".format(lon) + " {:.2f}N".format(lat))
 
 def get_info_df(
     r: 'requests.models.Response',

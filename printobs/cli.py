@@ -10,6 +10,7 @@ from .utils import print_available_locations
 from .utils import get_info_df, format_df, format_info_df
 from .utils import sort_df
 from .utils import dump
+from .utils import print_info
 
 def main():
     parser = argparse.ArgumentParser(description="""
@@ -57,7 +58,7 @@ def main():
     sd = parse_date(dargs.get('sd',datetime.now() - timedelta(hours=12)))
 
     if args.d is not None:
-        sd = parse_date(ed) - timedelta(hours=args.d)
+        sd = parse_date(ed) - timedelta(hours=args.d) - timedelta(hours=3)
 
     s = dargs.get('s')
     i = None
@@ -86,10 +87,18 @@ def main():
         fdf = format_df(df)
         # format info df
         if v == 'v1':
-            fdf_info = format_info_df(df,fdf,df_info,['Valid Height [m]'])
+            try:
+                fdf_info = \
+                    format_info_df(df,fdf,df_info,['Valid Height [m]'])
+            except Exception as e:
+                print('Additional info not available due to')
+                print(e)
+                fdf_info = None
         else: fdf_info = None
         # print to screen
-        print_formatted(fdf,s,fdf_info)
+        print_formatted(fdf,fdf_info)
+        print_info(r,s)
+        print('')
         t3 = time.time()
         print('time used:', f'{t3-t1:.2f}', 'seconds')
     if w is not None:
