@@ -130,6 +130,8 @@ def get_frost_df_v0(r: 'requests.models.Response')\
         dftmp = df.loc[df['elementId'] == v]['value'].reset_index(drop=True).to_frame()
         dftmp = dftmp.rename(columns={ dftmp.columns[0]: varstr_dict[v] })
         df2 = pd.concat([df2, dftmp.reindex(df2.index)], axis=1)
+    # rename referenceTime to time
+    df2 = df2.rename(columns={ 'referenceTime': 'time' })
     return df2
 
 def get_frost_df_v1(r: 'requests.models.Response')\
@@ -160,9 +162,13 @@ def get_frost_df_v1(r: 'requests.models.Response')\
 def get_frost_df_info(r: 'requests.models.Response')\
     -> 'pandas.core.frame.DataFrame':
     df = pd.json_normalize(r.json()['data']['tseries'])
-    dfc = df[['header.extra.level.level']]
-    dfc = dfc.rename(columns={ 'header.extra.level.level': 'HAMSL [m] (repr)' })
-    # repr for represented height
+    #dfc = df[['header.extra.level.level']]
+    #dfc = dfc.rename(columns={ 'header.extra.level.level': 'HAMSL [m] (repr)' })
+    dfc = df[['header.extra.timeseries.geometry.level.value']]
+    dfc = dfc.rename(\
+            columns={\
+            'header.extra.timeseries.geometry.level.value':\
+            'HAMSL [m] (repr)' }) # repr for represented height
     # add also values for actual height
     return dfc
 
@@ -284,12 +290,13 @@ def format_info_df(
             if np.isnan(val) or val == 0:
                 vstr += (idx-len(vstr))* " " + len(key)* " "
             else:
-                template = "{:" + str(len(key)) + ".1f}"
+                #template = "{:" + str(len(key)) + ".1f}"
+                template = "{:" + str(len(key)) + ".0f}"
                 valstr = template.format(val)
                 vstr += (idx-len(vstr))* " " + valstr
     return vstr
 
-def print_formatted(dfstr: list, dfstr_info: str, nID: str):
+def print_formatted(dfstr: list, nID: str = None, dfstr_info: str = None):
     """
     print formatted output of retrieved dataframe to screen
     """
@@ -298,7 +305,8 @@ def print_formatted(dfstr: list, dfstr_info: str, nID: str):
     print('\n'.join(dfstr[1:]))
     print('\n'.join(dfstr[0:1]))
     print('')
-    print(dfstr_info)
+    if dfstr_info is not None:
+        print(dfstr_info)
     print('--> ', nID, ' <--')
     print('')
 

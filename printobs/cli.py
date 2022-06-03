@@ -76,16 +76,20 @@ def main():
         t2 = time.time()
         print('time used for api call:', f'{t2-t1:.2f}', 'seconds')
         df = get_frost_df(r,v)
-        dfi = get_frost_df_info(r)
-        df_info = get_info_df(r,df,dfi)
+        # get additional info
+        if v == 'v1':
+            dfi = get_frost_df_info(r)
+            df_info = get_info_df(r,df,dfi)
         # reorganize df
         df = sort_df(df)
         # format data for output
         fdf = format_df(df)
         # format info df
-        fdf_info = format_info_df(df,fdf,df_info,['Valid Height [m]'])
+        if v == 'v1':
+            fdf_info = format_info_df(df,fdf,df_info,['Valid Height [m]'])
+        else: fdf_info = None
         # print to screen
-        print_formatted(fdf,fdf_info,s)
+        print_formatted(fdf,s,fdf_info)
         t3 = time.time()
         print('time used:', f'{t3-t1:.2f}', 'seconds')
     if w is not None:
