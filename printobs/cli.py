@@ -97,7 +97,8 @@ def main():
         else: fdf_info = None
         # print to screen
         print_formatted(fdf,fdf_info)
-        print_info(r,s)
+        if v == 'v1':
+            print_info(r,s)
         print('')
         t3 = time.time()
         print('time used:', f'{t3-t1:.2f}', 'seconds')
