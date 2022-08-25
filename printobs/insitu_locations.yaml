@@ -1,5 +1,12 @@
 --- # information on in-situ locations
 
+### misc ###
+nhbrua:
+    ID: 52452
+
+sotrabrua:
+    ID: 50526
+
 ### oil rigs ###
 asgarda:
     operator: Equinor_Energy
@@ -27,7 +34,7 @@ deepseaNK: # DEEPSEA NORDKAPP
 
 ekofiskL:
     operator: ConocoPhillips_Skandinavia
-    ID:
+    ID: 76920
 
 gjoa:
     operator: Neptun_Energy_Norge
