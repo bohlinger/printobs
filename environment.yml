@@ -11,3 +11,6 @@ dependencies:
   - pyyaml
   - requests
   - xarray
+  - pip
+  - pip:
+    - pytest
