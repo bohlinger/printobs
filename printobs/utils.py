@@ -147,14 +147,21 @@ def get_frost_df_v1(r: 'requests.models.Response')\
     dfc = pd.json_normalize(r.json()
       ['data']['tseries'][0]['observations'])['time'].to_frame()
     for vn in varstr_dict:
+        print('##########')
+        print(vn)
+        print(df['header.extra.element.id'])
         idx = df['header.extra.element.id'][df['header.extra.element.id']==vn].index.to_list()
+        print(idx)
+        print(df['header.id.sensor'])
+        print('##########')
         for i in idx:
             dftmp = pd.json_normalize(r.json()\
                     ['data']['tseries'][i]['observations'])\
                     ['body.data'].to_frame()
             vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
             #vns = vns + ' (' + str(df['header.extra.level.level'][i]) + 'm)'
-            dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns })
+            #dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns })
+            dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).astype(float)
             dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
             dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
     return dfc
