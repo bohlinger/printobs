@@ -139,6 +139,8 @@ def get_frost_df_v1(r: 'requests.models.Response')\
     """
     create pandas dataframe from frost call for v1
     """
+    # empy sensor id lst
+    sensor_id_lst = []
     # base df
     df = pd.json_normalize(r.json()['data']['tseries'])
     # df to be concatenated initialized with time
@@ -147,36 +149,48 @@ def get_frost_df_v1(r: 'requests.models.Response')\
     dfc = pd.json_normalize(r.json()
       ['data']['tseries'][0]['observations'])['time'].to_frame()
     for vn in varstr_dict:
-        print('##########')
-        print(vn)
-        print(df['header.extra.element.id'])
         idx = df['header.extra.element.id'][df['header.extra.element.id']==vn].index.to_list()
-        print(idx)
-        print(df['header.id.sensor'])
-        print('##########')
-        for i in idx:
-            dftmp = pd.json_normalize(r.json()\
-                    ['data']['tseries'][i]['observations'])\
-                    ['body.data'].to_frame()
-            vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
-            #vns = vns + ' (' + str(df['header.extra.level.level'][i]) + 'm)'
-            #dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns })
-            dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).astype(float)
-            dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
-            dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
+        indices = df['header.id.sensor'][idx].values
+        if len(indices) != len(np.unique(indices)):
+            print("Caution:")
+            print("-> sensor.id was not unique -> automatic selection")
+            print("   affected ariable: ", vn)
+            dflst = [] # list of dataframes
+            nonlst = [] # list of numer of NaNs (non)
+            for i in idx:
+                dftmp = pd.json_normalize(r.json()\
+                        ['data']['tseries'][i]['observations'])\
+                        ['body.data'].to_frame()
+                vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
+                dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
+                            astype(float)
+                dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
+                dflst.append(dftmp)
+                nonlst.append(len(dftmp[np.isnan(dftmp)]))
+            # check which df has least NaN and pick this one
+            max_idx = nonlst.index(np.max(nonlst))
+            dfc = pd.concat([dfc, dflst[max_idx].reindex(dfc.index)], axis=1)
+        else:
+            for i in idx:
+                dftmp = pd.json_normalize(r.json()\
+                        ['data']['tseries'][i]['observations'])\
+                        ['body.data'].to_frame()
+                vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
+                dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
+                            astype(float)
+                dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
+                dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
     return dfc
 
 def get_frost_df_info(r: 'requests.models.Response')\
     -> 'pandas.core.frame.DataFrame':
     df = pd.json_normalize(r.json()['data']['tseries'])
-    #dfc = df[['header.extra.level.level']]
-    #dfc = dfc.rename(columns={ 'header.extra.level.level': 'HAMSL [m] (repr)' })
     dfc = df[['header.extra.timeseries.geometry.level.value']]
     dfc = dfc.rename(\
             columns={\
             'header.extra.timeseries.geometry.level.value':\
             'HAMSL [m] (repr)' }) # repr for represented height
-    # add also values for actual height
+    # add also values for actual height when available
     return dfc
 
 def get_element_id_order(r: 'requests.models.Response')\
@@ -185,7 +199,8 @@ def get_element_id_order(r: 'requests.models.Response')\
     idx_dict = {}
     idx_lst = []
     for vn in varstr_dict:
-        idx = df['header.extra.element.id'][df['header.extra.element.id']==vn].index.to_list()
+        idx = df['header.extra.element.id']\
+                [df['header.extra.element.id']==vn].index.to_list()
         idx_dict[vn] = idx
         idx_lst.append(idx)
     return idx_dict, flatten(idx_lst)
@@ -202,10 +217,14 @@ def sort_df(df: 'pandas.core.frame.DataFrame')\
     for vn in varstr_dict:
         alst.append(varstr_dict[vn])
     # get list of df element keys
+    print(alst)
     elst = list(df.keys())
+    print(elst)
     nelst = []
     nelst.append(['time'])
     for va in alst:
+        #print(va)
+        #print(elst)
         tmp = [elst[i] for i in range(len(elst)) if va in elst[i]]
         tmp.sort()
         nelst.append(tmp)
