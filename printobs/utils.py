@@ -149,7 +149,8 @@ def get_frost_df_v1(r: 'requests.models.Response')\
     dfc = pd.json_normalize(r.json()
       ['data']['tseries'][0]['observations'])['time'].to_frame()
     for vn in varstr_dict:
-        idx = df['header.extra.element.id'][df['header.extra.element.id']==vn].index.to_list()
+        idx = df['header.extra.element.id']\
+                [df['header.extra.element.id']==vn].index.to_list()
         indices = df['header.id.sensor'][idx].values
         if len(indices) != len(np.unique(indices)):
             print("Caution:")
@@ -160,7 +161,8 @@ def get_frost_df_v1(r: 'requests.models.Response')\
             for i in idx:
                 dftmp = pd.json_normalize(r.json()\
                         ['data']['tseries'][i]['observations'])\
-                        ['body.data'].to_frame()
+                        ['body.value'].to_frame()
+                        #['body.data'].to_frame()
                 vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
                 dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
                             astype(float)
@@ -174,7 +176,8 @@ def get_frost_df_v1(r: 'requests.models.Response')\
             for i in idx:
                 dftmp = pd.json_normalize(r.json()\
                         ['data']['tseries'][i]['observations'])\
-                        ['body.data'].to_frame()
+                        ['body.value'].to_frame()
+                        #['body.data'].to_frame()
                 vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
                 dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
                             astype(float)
@@ -217,9 +220,9 @@ def sort_df(df: 'pandas.core.frame.DataFrame')\
     for vn in varstr_dict:
         alst.append(varstr_dict[vn])
     # get list of df element keys
-    print(alst)
+    #print(alst)
     elst = list(df.keys())
-    print(elst)
+    #print(elst)
     nelst = []
     nelst.append(['time'])
     for va in alst:
@@ -336,17 +339,33 @@ def print_formatted(dfstr: list, dfstr_info: str = None):
     print('')
 
 def print_info(r: 'requests.models.Response',nID: str = None):
-    df = pd.json_normalize(r.json()['data']['tseries'])
-    lon = float(\
+    print('--> ', nID, ' <--')
+    # print recent location if moving
+    dfkeys = pd.json_normalize(\
+             r.json()['data']['tseries'][0]['observations']).keys()
+    if 'body.lat' in dfkeys:
+        lat = pd.json_normalize(r.json()\
+                    ['data']['tseries'][0]['observations'])\
+                    ['body.lat'].to_frame()['body.lat'].values[-1]
+        lon = pd.json_normalize(r.json()\
+                    ['data']['tseries'][0]['observations'])\
+                    ['body.lon'].to_frame()['body.lon'].values[-1]
+        # type of lat/lon is str
+        print( "Location (recent): " + lon + "E " + lat + "N" )
+    else:
+        # print location if static
+        df = pd.json_normalize(r.json()['data']['tseries'])
+        lon = float(\
             df['header.extra.station.location']\
             [0][0]\
             ['value']['longitude'])
-    lat = float(\
+        lat = float(\
             df['header.extra.station.location']\
             [0][0]\
             ['value']['latitude'])
-    print('--> ', nID, ' <--')
-    print("Location (i.e. sensor #0): {:.2f}E".format(lon) + " {:.2f}N".format(lat))
+        print(\
+                "Location (i.e. sensor #0): {:.2f}E".format(lon) \
+              + " {:.2f}N".format(lat) )
 
 def get_info_df(
     r: 'requests.models.Response',
