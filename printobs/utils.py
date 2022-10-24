@@ -219,15 +219,12 @@ def sort_df(df: 'pandas.core.frame.DataFrame')\
     alst = []
     for vn in varstr_dict:
         alst.append(varstr_dict[vn])
-    # get list of df element keys
-    #print(alst)
-    elst = list(df.keys())
-    #print(elst)
+    # get list of df element keys and exclude other than str
+    elst = [e for e in list(df.keys()) if isinstance(e,str)]
+    # make sure that elst includes only strings
     nelst = []
     nelst.append(['time'])
     for va in alst:
-        #print(va)
-        #print(elst)
         tmp = [elst[i] for i in range(len(elst)) if va in elst[i]]
         tmp.sort()
         nelst.append(tmp)
@@ -340,10 +337,10 @@ def print_formatted(dfstr: list, dfstr_info: str = None):
 
 def print_info(r: 'requests.models.Response',nID: str = None):
     print('--> ', nID, ' <--')
-    # print recent location if moving
     dfkeys = pd.json_normalize(\
              r.json()['data']['tseries'][0]['observations']).keys()
     if 'body.lat' in dfkeys:
+        # print recent location if moving
         lat = pd.json_normalize(r.json()\
                     ['data']['tseries'][0]['observations'])\
                     ['body.lat'].to_frame()['body.lat'].values[-1]
