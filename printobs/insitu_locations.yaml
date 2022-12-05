@@ -38,7 +38,7 @@ ekofiskL:
 
 gjoa:
     operator: Neptun_Energy_Norge
-    ID:
+    ID: 76954
 
 goliat:
     operator: VarEnergi
@@ -100,11 +100,11 @@ ormenlange:
     operator: NorskeShell
     ID: 76933
 
-oseberg:
-    operator: NA
-    ID:
+#oseberg:
+    #operator: NA
+    #ID:
 
-oseberga:
+oseberga: # field center
     operator: NA
     ID: 76927
 
@@ -112,7 +112,11 @@ osebergc:
     operator: NA
     ID: 76965
 
-osebergsyd: # OsebergEast i Vegard's liste
+#osebergost: # OsebergEast i Vegard's liste
+    #operator: NA
+    #ID: 76966
+
+osebergsyd: # OsebergSouth i Vegard's liste
     operator: NA
     ID: 76967
 

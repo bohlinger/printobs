@@ -95,13 +95,15 @@ def call_frost_api_v1(\
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
     endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/kvkafka/get?'
+    #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
                 'time': frost_reference_time,
                 #'timeoffsets': 'default', # handled by filter
                 'levels': 0,
-                'incobs': 'true'
+                'incobs': 'true',
+                'typeids': '22,11,510'
                 }
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
