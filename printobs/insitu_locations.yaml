@@ -3,102 +3,127 @@
 ### misc ###
 nhbrua:
     ID: 52452
+    typeids: 510
 
 sotrabrua:
     ID: 50526
+    typeids: 510
 
 ### oil rigs ###
 asgarda:
     operator: Equinor_Energy
     ID: 76958
+    typeids: 22
 
 asgardb:
     operator: Equinor_Energy
     ID: 76958
+    typeids: 22
 
 aastahansteen:
     operator: Equinor_Energy
     ID: 77040
+    typeids: 22
 
 brage:
     operator: Wintershall_Dea_Norge
     ID: 76959
+    typeids: 22
 
 draugen:
     operator: OKEA
     ID: 76925
+    typeids: 22
 
 # owned by Odfjell Drilling and under contract for AkerBP
 deepseaNK: # DEEPSEA NORDKAPP
     ID: 77043
+    typeids:
 
 ekofiskL:
     operator: ConocoPhillips_Skandinavia
     ID: 76920
+    typeids: 22
 
 gjoa:
     operator: Neptun_Energy_Norge
     ID: 76954
+    typeids: 22
 
 goliat:
     operator: VarEnergi
     ID: 76956
+    typeids: 22
 
 grane:
     operator: Equinor_Energy
     ID: 76960
+    typeids: 22
 
 gudrun:
     ID: 77041
+    typeids: 22
 
 gullfaksc:
     operator: Equinor_Energy
     ID: 76923
+    typeids: 22
 
 heidrun:
     operator: Equinor_Energy
     ID: 76928
+    typeids: 22
 
 # d38 under /lustre/storeB/immutable/archive/projects/metproduction/DNMI_OFFSHORE/heimdal/d38/2022
 heimdal:
     operator: Equinor_Energy
     ID: 76932
+    typeids: 22
 
 johansverdrup:
     operator:
     ID: 20929
+    typeids: 22
 
 kvitebjorn:
     operator: Equinor_Energy
     ID: 76969
+    typeids: 22
 
 kristin:
     operator: Equinor_Energy
     ID: 76963
+    typeids: 22
 
 huldra: # not working
     operator: Equinor_Energy
     ID: 76962
+    typeids: 22
 
 njorda: # 2004-2016
     operator: Equinor_Energy
     ID: 76964
+    typeids: 22
 
 martinlingea: # a same as b
     operator:
     ID: 76915
+    typeids: 22
 
 martinlingeb:
     operator:
     ID: 76915
+    typeids: 22
 
 norne:
     operator: Equinor_Energy
     ID: 76930
+    typeids: 22
 
 ormenlange:
     operator: NorskeShell
     ID: 76933
+    typeids: 22
 
 #oseberg:
     #operator: NA
@@ -107,10 +132,12 @@ ormenlange:
 oseberga: # field center
     operator: NA
     ID: 76927
+    typeids: 22
 
 osebergc:
     operator: NA
     ID: 76965
+    typeids: 22
 
 #osebergost: # OsebergEast i Vegard's liste
     #operator: NA
@@ -119,68 +146,85 @@ osebergc:
 osebergsyd: # OsebergSouth i Vegard's liste
     operator: NA
     ID: 76967
+    typeids: 22
 
 #  TEEKAY PETROJARL PRODUKTION AS Data kommer via BP
 #  Altera Infrastructure
 petrojarl: # PETROJARL KNARR ()
     ID: 77027
+    #typeids:
 
 scarabeo8:
     ID: 76999
+    #typeids:
 
 snorrea:
     operator: Equinor_Energy
     ID: 76935
+    typeids: 22
 
 snorreb:
     operator: Equinor_Energy
     ID: 76936
+    typeids: 22
 
 sleipnera:
     operator: Equinor_Energy
     ID: 76926
+    typeids: 22
 
 sleipnerb:
     operator: Equinor_Energy
     ID: 76961
+    typeids: 22
 
 statfjorda:
     operator: Equinor_Energy
     ID: 76922
+    typeids: 22
 
 statfjordb:
     operator: Equinor_Energy
     ID: 76934
+    typeids: 22
 
 trolla:
     operator: Equinor_Energy
     ID: 76931
+    typeids: 22
 
 trollb:
     operator: Equinor_Energy
     ID: 76957
+    typeids: 22
 
 trollc:
     operator: Equinor_Energy
     ID: 76937
+    typeids: 22
 
 ula:
     operator: Aker_BP
     ID: 76938
+    typeids: 22
 
 valhall:
     operator: Aker_BP
     #ID: 76939
     ID: 76939
+    typeids: 22
 
 veslefrikk:
     operator: Equinor_Energy
     ID: 76995
+    typeids: 22
 
 visund: # not working
     operator:
     ID: 76968
+    typeids: 22
 
 yme:
     operator: Repsol
     ID: 76929
+    typeids: 22

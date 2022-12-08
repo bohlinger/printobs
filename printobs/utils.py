@@ -85,6 +85,10 @@ def call_frost_api_v0(\
                 }
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
+def get_typeid(insitu_dict: dict, s: str) -> str:
+    typeid = insitu_dict[s].get('typeids',22)
+    return typeid
+
 def call_frost_api_v1(\
     nID: str, varstr: str,frost_reference_time: str, client_id: str)\
     -> 'requests.models.Response':
@@ -103,7 +107,8 @@ def call_frost_api_v1(\
                 #'timeoffsets': 'default', # handled by filter
                 'levels': 0,
                 'incobs': 'true',
-                'typeids': '22,11,510'
+                #'typeids': '22,11,510'
+                'typeids': str(get_typeid(insitu_dict,nID))
                 }
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
