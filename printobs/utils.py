@@ -293,6 +293,33 @@ def format_df(df: 'pandas.core.frame.DataFrame')\
                     "Ta_4": "{:,.1f}".format,
                     "Ta_5": "{:,.1f}".format,
                     #
+                    "DDP_0": "{:7.1f}".format,
+                    "DDP_1": "{:,.1f}".format,
+                    "DDP_2": "{:,.1f}".format,
+                    "DDP_3": "{:,.1f}".format,
+                    "DDP_4": "{:,.1f}".format,
+                    "DDP_5": "{:,.1f}".format,
+                    #
+                    "Hmax_0": "{:7.1f}".format,
+                    "Hmax_1": "{:,.1f}".format,
+                    "Hmax_2": "{:,.1f}".format,
+                    "Hmax_3": "{:,.1f}".format,
+                    "Hmax_4": "{:,.1f}".format,
+                    "Hmax_5": "{:,.1f}".format,
+                    #
+                    "HLAT_0": "{:7.1f}".format,
+                    "HLAT_1": "{:,.1f}".format,
+                    "HLAT_2": "{:,.1f}".format,
+                    "HLAT_3": "{:,.1f}".format,
+                    "HLAT_4": "{:,.1f}".format,
+                    "HLAT_5": "{:,.1f}".format,
+                    #
+                    "FG_0": "{:7.1f}".format,
+                    "FG_1": "{:,.1f}".format,
+                    "FG_2": "{:,.1f}".format,
+                    "FG_3": "{:,.1f}".format,
+                    "FG_4": "{:,.1f}".format,
+                    "FG_5": "{:,.1f}".format,
                     '': lambda x: "{:%Y-%m-%d %H:%M UTC }".format(pd.to_datetime(x, unit="ns"))
                     },
         index = False).split('\n')

@@ -5,7 +5,10 @@
 sea_surface_wave_significant_height: Hs
 sea_surface_wave_mean_period: Tm02
 sea_surface_wave_period_at_variance_spectral_density_maximum: Tp
+sea_surface_primary_wave_from_direction: DDP
+sea_surface_wave_maximum_height: Hmax
 wind_speed: FF
+wind_speed_of_gust: FG
 wind_from_direction: DD
 air_temperature: Ta
-sea_surface_wave_maximum_height: Hmax
+sea_surface_height_above_lowest_astronomical_tide: HLAT
