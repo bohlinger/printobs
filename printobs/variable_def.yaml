@@ -8,3 +8,4 @@ sea_surface_wave_period_at_variance_spectral_density_maximum: Tp
 wind_speed: FF
 wind_from_direction: DD
 air_temperature: Ta
+sea_surface_wave_maximum_height: Hmax
