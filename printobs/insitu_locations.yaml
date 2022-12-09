@@ -38,7 +38,7 @@ draugen:
 # owned by Odfjell Drilling and under contract for AkerBP
 deepseaNK: # DEEPSEA NORDKAPP
     ID: 77043
-    typeids:
+    typeids: 22
 
 ekofiskL:
     operator: ConocoPhillips_Skandinavia
@@ -150,13 +150,14 @@ osebergsyd: # OsebergSouth i Vegard's liste
 
 #  TEEKAY PETROJARL PRODUKTION AS Data kommer via BP
 #  Altera Infrastructure
-petrojarl: # PETROJARL KNARR ()
-    ID: 77027
-    #typeids:
+#  petrojarl er nedlagt
+#petrojarl: # PETROJARL KNARR ()
+#    ID: 77027
+#    #typeids:
 
 scarabeo8:
     ID: 76999
-    #typeids:
+    typeids: 22
 
 snorrea:
     operator: Equinor_Energy
