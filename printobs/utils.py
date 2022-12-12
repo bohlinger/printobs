@@ -314,12 +314,19 @@ def format_df(df: 'pandas.core.frame.DataFrame')\
                     "HLAT_4": "{:,.1f}".format,
                     "HLAT_5": "{:,.1f}".format,
                     #
-                    "FG_0": "{:7.1f}".format,
-                    "FG_1": "{:,.1f}".format,
-                    "FG_2": "{:,.1f}".format,
-                    "FG_3": "{:,.1f}".format,
-                    "FG_4": "{:,.1f}".format,
-                    "FG_5": "{:,.1f}".format,
+                    "FG10_0": "{:7.1f}".format,
+                    "FG10_1": "{:,.1f}".format,
+                    "FG10_2": "{:,.1f}".format,
+                    "FG10_3": "{:,.1f}".format,
+                    "FG10_4": "{:,.1f}".format,
+                    "FG10_5": "{:,.1f}".format,
+                    #
+                    "FG20_0": "{:7.1f}".format,
+                    "FG20_1": "{:,.1f}".format,
+                    "FG20_2": "{:,.1f}".format,
+                    "FG20_3": "{:,.1f}".format,
+                    "FG20_4": "{:,.1f}".format,
+                    "FG20_5": "{:,.1f}".format,
                     '': lambda x: "{:%Y-%m-%d %H:%M UTC }".format(pd.to_datetime(x, unit="ns"))
                     },
         index = False).split('\n')
