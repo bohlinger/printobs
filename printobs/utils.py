@@ -307,12 +307,12 @@ def format_df(df: 'pandas.core.frame.DataFrame')\
                     "Hmax_4": "{:,.1f}".format,
                     "Hmax_5": "{:,.1f}".format,
                     #
-                    "HLAT_0": "{:7.1f}".format,
-                    "HLAT_1": "{:,.1f}".format,
-                    "HLAT_2": "{:,.1f}".format,
-                    "HLAT_3": "{:,.1f}".format,
-                    "HLAT_4": "{:,.1f}".format,
-                    "HLAT_5": "{:,.1f}".format,
+                    "HLAT_0": "{:7.2f}".format,
+                    "HLAT_1": "{:,.2f}".format,
+                    "HLAT_2": "{:,.2f}".format,
+                    "HLAT_3": "{:,.2f}".format,
+                    "HLAT_4": "{:,.2f}".format,
+                    "HLAT_5": "{:,.2f}".format,
                     #
                     "FG10_0": "{:7.1f}".format,
                     "FG10_1": "{:,.1f}".format,
