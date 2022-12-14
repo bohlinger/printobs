@@ -98,14 +98,15 @@ def call_frost_api_v1(\
     ID = insitu_dict[nID]['ID']
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
-    endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/kvkafka/get?'
+    #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/kvkafka/get?'
+    endpoint = 'https://restricted.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
     #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
                 'time': frost_reference_time,
                 #'timeoffsets': 'default', # handled by filter
-                'levels': 0,
+                'levels': 'all',
                 'incobs': 'true',
                 #'typeids': '22,11,510'
                 'typeids': str(get_typeid(insitu_dict,nID))
