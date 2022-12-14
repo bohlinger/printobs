@@ -108,6 +108,7 @@ def call_frost_api_v1(\
                 #'timeoffsets': 'default', # handled by filter
                 'levels': 'all',
                 'incobs': 'true',
+                'sensors': '0,1,2,3,4,5',
                 #'typeids': '22,11,510'
                 'typeids': str(get_typeid(insitu_dict,nID))
                 }
