@@ -105,7 +105,6 @@ def call_frost_api_v1(\
                 'stationids': ID,
                 'elementids': varstr,
                 'time': frost_reference_time,
-                #'timeoffsets': 'default', # handled by filter
                 'levels': 'all',
                 'incobs': 'true',
                 'sensors': '0,1,2,3,4,5',
@@ -130,7 +129,7 @@ def get_frost_df_v0(r: 'requests.models.Response')\
     create pandas dataframe from frost call for v0
     """
     varstr_lst = list(varstr_dict.keys())
-    alias_lst = [varstr_dict[e] for e in varstr_dict]
+    alias_lst = [varstr_dict[e]['alias'] for e in varstr_dict]
     df = pd.json_normalize(r.json()['data'],
                             ['observations'],
                             ['referenceTime'])
@@ -138,7 +137,7 @@ def get_frost_df_v0(r: 'requests.models.Response')\
     df2 = df2.to_frame()
     for v in varstr_lst:
         dftmp = df.loc[df['elementId'] == v]['value'].reset_index(drop=True).to_frame()
-        dftmp = dftmp.rename(columns={ dftmp.columns[0]: varstr_dict[v] })
+        dftmp = dftmp.rename(columns={ dftmp.columns[0]: varstr_dict[v]['alias'] })
         df2 = pd.concat([df2, dftmp.reindex(df2.index)], axis=1)
     # rename referenceTime to time
     df2 = df2.rename(columns={ 'referenceTime': 'time' })
@@ -154,18 +153,31 @@ def get_frost_df_v1(r: 'requests.models.Response')\
     # base df
     df = pd.json_normalize(r.json()['data']['tseries'])
     # df to be concatenated initialized with time
-    # dfc3 = pd.json_normalize(r.json()['data']['tseries'])['header.extra.station.latitude'] # for stationary
-    # dfc3 = pd.json_normalize(r.json()['data']['tseries'][0]['observations'][0]['body'])['lat'] # for moving platform
+    """
+    # location for stationary
+    # dfc3 = pd.json_normalize(r.json()['data']['tseries'])['header.extra.station.latitude']
+    # location for moving platform
+    # dfc3 = pd.json_normalize(r.json()['data']['tseries'][0]['observations'][0]['body'])['lat']
+    """
     dfc = pd.json_normalize(r.json()
       ['data']['tseries'][0]['observations'])['time'].to_frame()
     for vn in varstr_dict:
         idx = df['header.extra.element.id']\
                 [df['header.extra.element.id']==vn].index.to_list()
+        ###
+        print('#################################')
+        print(vn)
+        print(df['header.extra.element.id'][idx])
+        print(df['header.id.parameterid'][idx])
+        print(df['header.id.level'][idx])
+        print(df['header.id.sensor'][idx])
+        print('#################################')
+        ###
         indices = df['header.id.sensor'][idx].values
         if len(indices) != len(np.unique(indices)):
             print("Caution:")
             print("-> sensor.id was not unique -> automatic selection")
-            print("   affected ariable: ", vn)
+            print("   affected variable: ", vn)
             dflst = [] # list of dataframes
             nonlst = [] # list of numer of NaNs (non)
             for i in idx:
@@ -173,7 +185,7 @@ def get_frost_df_v1(r: 'requests.models.Response')\
                         ['data']['tseries'][i]['observations'])\
                         ['body.value'].to_frame()
                         #['body.data'].to_frame()
-                vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
+                vns = varstr_dict[vn]['alias'] + '_' + str(df['header.id.sensor'][i])
                 dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
                             astype(float)
                 dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
@@ -183,12 +195,13 @@ def get_frost_df_v1(r: 'requests.models.Response')\
             max_idx = nonlst.index(np.max(nonlst))
             dfc = pd.concat([dfc, dflst[max_idx].reindex(dfc.index)], axis=1)
         else:
+            print("-> sensor.id was unique for variable: ", vn)
             for i in idx:
                 dftmp = pd.json_normalize(r.json()\
                         ['data']['tseries'][i]['observations'])\
                         ['body.value'].to_frame()
                         #['body.data'].to_frame()
-                vns = varstr_dict[vn] + '_' + str(df['header.id.sensor'][i])
+                vns = varstr_dict[vn]['alias'] + '_' + str(df['header.id.sensor'][i])
                 dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
                             astype(float)
                 dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
@@ -228,7 +241,7 @@ def sort_df(df: 'pandas.core.frame.DataFrame')\
     # get list of aliases
     alst = []
     for vn in varstr_dict:
-        alst.append(varstr_dict[vn])
+        alst.append(varstr_dict[vn]['alias'])
     # get list of df element keys and exclude other than str
     elst = [e for e in list(df.keys()) if isinstance(e,str)]
     # make sure that elst includes only strings
