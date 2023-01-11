@@ -162,51 +162,71 @@ def get_frost_df_v1(r: 'requests.models.Response')\
     dfc = pd.json_normalize(r.json()
       ['data']['tseries'][0]['observations'])['time'].to_frame()
     for vn in varstr_dict:
-        idx = df['header.extra.element.id']\
-                [df['header.extra.element.id']==vn].index.to_list()
+        idx = np.array(df['header.extra.element.id']\
+                [df['header.extra.element.id']==vn].index.to_list())
         ###
-        print('#################################')
-        print(vn)
-        print(df['header.extra.element.id'][idx])
-        print(df['header.id.parameterid'][idx])
-        print(df['header.id.level'][idx])
-        print(df['header.id.sensor'][idx])
-        print('#################################')
+        # key variables for frost:
+        #print(df['header.extra.element.id'][idx])
+        #print(df['header.id.parameterid'][idx])
+        #print(df['header.id.level'][idx])
+        #print(df['header.id.sensor'][idx])
         ###
-        indices = df['header.id.sensor'][idx].values
-        if len(indices) != len(np.unique(indices)):
-            print("Caution:")
-            print("-> sensor.id was not unique -> automatic selection")
+        sensors = df['header.id.sensor'][idx].values
+        parameterids = df['header.id.parameterid'][idx].values
+        levels = df['header.id.level'][idx].values
+        if len(sensors) != len(np.unique(sensors)):
+            print("-> id.sensor was not unique " \
+                    + "selecting according to variable_def.yaml")
             print("   affected variable: ", vn)
-            dflst = [] # list of dataframes
-            nonlst = [] # list of numer of NaNs (non)
-            for i in idx:
-                dftmp = pd.json_normalize(r.json()\
+            # 1. prioritize according to parameterid
+            if len(np.unique(parameterids)) > 1:
+                print('multiple parameterids (',\
+                        len(np.unique(parameterids)),')')
+                idx = find_preferred(\
+                        idx,sensors,parameterids,\
+                        varstr_dict[vn]['prime_parameterid'])
+                sensors = df['header.id.sensor'][idx].values
+                parameterids = df['header.id.parameterid'][idx].values
+                levels = df['header.id.level'][idx].values
+            # 2. prioritize according to level
+            if len(np.unique(levels)) > 1:
+                print('multiple levels (',len(np.unique(levels)),')')
+                #print('sensors',sensors)
+                #print('parameterids',parameterids)
+                #print('levels',levels)
+                idx = find_preferred(\
+                        idx,sensors,levels,\
+                        varstr_dict[vn]['prime_level'])
+                sensors = df['header.id.sensor'][idx].values
+                parameterids = df['header.id.parameterid'][idx].values
+                levels = df['header.id.level'][idx].values
+        for i in idx:
+            dftmp = pd.json_normalize(r.json()\
                         ['data']['tseries'][i]['observations'])\
                         ['body.value'].to_frame()
-                        #['body.data'].to_frame()
-                vns = varstr_dict[vn]['alias'] + '_' + str(df['header.id.sensor'][i])
-                dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
+            vns = varstr_dict[vn]['alias'] + '_' \
+                        + str(df['header.id.sensor'][i])
+            dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
                             astype(float)
-                dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
-                dflst.append(dftmp)
-                nonlst.append(len(dftmp[np.isnan(dftmp)]))
-            # check which df has least NaN and pick this one
-            max_idx = nonlst.index(np.max(nonlst))
-            dfc = pd.concat([dfc, dflst[max_idx].reindex(dfc.index)], axis=1)
-        else:
-            print("-> sensor.id was unique for variable: ", vn)
-            for i in idx:
-                dftmp = pd.json_normalize(r.json()\
-                        ['data']['tseries'][i]['observations'])\
-                        ['body.value'].to_frame()
-                        #['body.data'].to_frame()
-                vns = varstr_dict[vn]['alias'] + '_' + str(df['header.id.sensor'][i])
-                dftmp = dftmp.rename(columns={ dftmp.columns[0]: vns }).\
-                            astype(float)
-                dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
-                dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
+            dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
+            dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
     return dfc
+
+def find_preferred(idx,sensors,refs,pref):
+    print('idx',idx)
+    sensorsU = np.unique(sensors)
+    preferred_idx = []
+    for s in sensorsU:
+        no = len(refs[sensors==s])
+        idx_1 = idx[sensors==s]
+        if no > 1:
+            idx_2 = np.where(refs[sensors==s]==pref)
+            idx_3 = idx_1[idx_2]
+            preferred_idx.append(list(idx_3)[0])
+        else:
+            preferred_idx.append(list(idx_1)[0])
+    print('preferred_idx',preferred_idx)
+    return preferred_idx
 
 def get_frost_df_info(r: 'requests.models.Response')\
     -> 'pandas.core.frame.DataFrame':
@@ -342,7 +362,8 @@ def format_df(df: 'pandas.core.frame.DataFrame')\
                     "FG20_3": "{:,.1f}".format,
                     "FG20_4": "{:,.1f}".format,
                     "FG20_5": "{:,.1f}".format,
-                    '': lambda x: "{:%Y-%m-%d %H:%M UTC }".format(pd.to_datetime(x, unit="ns"))
+                    '': lambda x: "{:%Y-%m-%d %H:%M UTC }".\
+                            format(pd.to_datetime(x, unit="ns"))
                     },
         index = False).split('\n')
     return dfstr
@@ -468,7 +489,8 @@ def print_available_locations():
     print('\n'.join(dfstr[1:]))
     print('----------------------')
     print('Info:')
-    print('above shown location aliases can be customized in insitu_locations.yaml')
+    print('above shown location aliases can be' \
+            ' customized in insitu_locations.yaml')
     print('----------------------')
 
 def dump(df: 'pandas.core.frame.DataFrame', ptf: str, f: str):
