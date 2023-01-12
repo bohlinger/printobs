@@ -53,7 +53,7 @@ wind_from_direction:
         alias: DD
         prime_parameterid: 61
         prime_level: 0
-        default_level: 10
+        default_level: -1
 air_temperature: 
         alias: Ta
         prime_parameterid: 211
