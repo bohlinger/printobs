@@ -159,8 +159,18 @@ def get_frost_df_v1(r: 'requests.models.Response')\
     # location for moving platform
     # dfc3 = pd.json_normalize(r.json()['data']['tseries'][0]['observations'][0]['body'])['lat']
     """
+    # select time index, some ts have less than others
+    # choose the one with most values
+    no_of_ts = len(pd.json_normalize(r.json()['data']['tseries'][:]))
+    no_of_ts = min(4,no_of_ts)
+    lenlst = []
+    for t in range(no_of_ts):
+        lenlst.append( len(pd.json_normalize(r.json()\
+                       ['data']['tseries'][t]['observations'])['time'].\
+                              to_frame()) )
+    time_idx = lenlst.index(max(lenlst))
     dfc = pd.json_normalize(r.json()
-      ['data']['tseries'][0]['observations'])['time'].to_frame()
+      ['data']['tseries'][time_idx]['observations'])['time'].to_frame()
     dinfo = {'sensor':{},'level':{},'parameterid':{},
              'geometric height':{},'masl':{}}
     for vn in varstr_dict:
