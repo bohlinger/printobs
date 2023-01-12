@@ -161,6 +161,8 @@ def get_frost_df_v1(r: 'requests.models.Response')\
     """
     dfc = pd.json_normalize(r.json()
       ['data']['tseries'][0]['observations'])['time'].to_frame()
+    dinfo = {'sensor':{},'level':{},'parameterid':{},
+             'geometric height':{},'masl':{}}
     for vn in varstr_dict:
         idx = np.array(df['header.extra.element.id']\
                 [df['header.extra.element.id']==vn].index.to_list())
@@ -182,6 +184,7 @@ def get_frost_df_v1(r: 'requests.models.Response')\
             if len(np.unique(parameterids)) > 1:
                 print('multiple parameterids (',\
                         len(np.unique(parameterids)),')')
+                print('parameterids:',np.unique(parameterids))
                 idx = find_preferred(\
                         idx,sensors,parameterids,\
                         varstr_dict[vn]['prime_parameterid'])
@@ -191,16 +194,14 @@ def get_frost_df_v1(r: 'requests.models.Response')\
             # 2. prioritize according to level
             if len(np.unique(levels)) > 1:
                 print('multiple levels (',len(np.unique(levels)),')')
-                #print('sensors',sensors)
-                #print('parameterids',parameterids)
-                #print('levels',levels)
+                print('unique(levels):',np.unique(levels))
                 idx = find_preferred(\
                         idx,sensors,levels,\
                         varstr_dict[vn]['prime_level'])
                 sensors = df['header.id.sensor'][idx].values
                 parameterids = df['header.id.parameterid'][idx].values
                 levels = df['header.id.level'][idx].values
-        for i in idx:
+        for n,i in enumerate(idx):
             dftmp = pd.json_normalize(r.json()\
                         ['data']['tseries'][i]['observations'])\
                         ['body.value'].to_frame()
@@ -210,10 +211,19 @@ def get_frost_df_v1(r: 'requests.models.Response')\
                             astype(float)
             dftmp[vns] = dftmp[vns].mask(dftmp[vns] < 0, np.nan)
             dfc = pd.concat([dfc, dftmp.reindex(dfc.index)], axis=1)
-    return dfc
+            # sensor
+            dinfo['sensor'][vns] = sensors[n]
+            # level
+            if levels[n] == 0:
+                dinfo['level'][vns] = varstr_dict[vn]['default_level']
+            else:
+                dinfo['level'][vns] = levels[n]
+            # parameterid
+            dinfo['parameterid'][vns] = parameterids[n]
+            #print(df['header.extra.timeseries.geometry.level.value'][i])
+    return dfc, dinfo
 
 def find_preferred(idx,sensors,refs,pref):
-    print('idx',idx)
     sensorsU = np.unique(sensors)
     preferred_idx = []
     for s in sensorsU:
@@ -225,19 +235,7 @@ def find_preferred(idx,sensors,refs,pref):
             preferred_idx.append(list(idx_3)[0])
         else:
             preferred_idx.append(list(idx_1)[0])
-    print('preferred_idx',preferred_idx)
     return preferred_idx
-
-def get_frost_df_info(r: 'requests.models.Response')\
-    -> 'pandas.core.frame.DataFrame':
-    df = pd.json_normalize(r.json()['data']['tseries'])
-    dfc = df[['header.extra.timeseries.geometry.level.value']]
-    dfc = dfc.rename(\
-            columns={\
-            'header.extra.timeseries.geometry.level.value':\
-            'HAMSL [m] (repr)' }) # repr for represented height
-    # add also values for actual height when available
-    return dfc
 
 def get_element_id_order(r: 'requests.models.Response')\
     -> list:
@@ -266,13 +264,17 @@ def sort_df(df: 'pandas.core.frame.DataFrame')\
     elst = [e for e in list(df.keys()) if isinstance(e,str)]
     # make sure that elst includes only strings
     nelst = []
-    nelst.append(['time'])
+    nelst.append('time')
     for va in alst:
         tmp = [elst[i] for i in range(len(elst)) if va in elst[i]]
         tmp.sort()
-        nelst.append(tmp)
+        # find doubles
+        for n in tmp:
+            if n in nelst:
+                pass
+            else:
+                nelst.append(n)
     # reorganize df according to sorted keys and return
-    nelst = flatten(nelst)
     return df[nelst]
 
 def format_df(df: 'pandas.core.frame.DataFrame')\
@@ -371,8 +373,8 @@ def format_df(df: 'pandas.core.frame.DataFrame')\
 def format_info_df(
     df: 'pandas.core.frame.DataFrame',
     fdf:list,
-    df_info: 'pandas.core.frame.DataFrame',
-    info_lst:list,
+    dinfo: dict,
+    attribute:str,
     )\
     -> str:
     """
@@ -385,13 +387,21 @@ def format_info_df(
         idx = fstr.index(key)
         if n == 0:
             rstr = idx * " " + key
-            vstr = info_lst[0]\
-                    + (idx-len(info_lst[0])) * " "\
-                    + len(key) * " "
+            val = dinfo[attribute][key]
+            if np.isnan(val):
+                vstr = attribute\
+                    + (idx-len(attribute)) * " "\
+                    + len(key)* " "
+            else:
+                template = "{:" + str(len(key)) + ".0f}"
+                valstr = template.format(val)
+                vstr = attribute\
+                    + (idx-len(attribute)) * " "\
+                    + valstr
         else:
             rstr += (idx-len(rstr))* " " + key
-            val = df_info[key].values[0]
-            if np.isnan(val) or val == 0:
+            val = dinfo[attribute][key]
+            if np.isnan(val):
                 vstr += (idx-len(vstr))* " " + len(key)* " "
             else:
                 #template = "{:" + str(len(key)) + ".1f}"
@@ -414,6 +424,7 @@ def print_formatted(dfstr: list, dfstr_info: str = None):
     print('')
 
 def print_info(r: 'requests.models.Response',nID: str = None):
+    print('\n')
     print('--> ', nID, ' <--')
     dfkeys = pd.json_normalize(\
              r.json()['data']['tseries'][0]['observations']).keys()
@@ -441,36 +452,6 @@ def print_info(r: 'requests.models.Response',nID: str = None):
         print(\
                 "Location (i.e. sensor #0): {:.2f}E".format(lon) \
               + " {:.2f}N".format(lat) )
-
-def get_info_df(
-    r: 'requests.models.Response',
-    df: 'pandas.core.frame.DataFrame',
-    dfi: 'pandas.core.frame.DataFrame',
-    ) -> 'pandas.core.frame.DataFrame':
-    # get order
-    _,idx_lst = get_element_id_order(r)
-    # get variable df
-    df = df.rename(columns={ df.columns[0]: '' })
-    tmpdf = df[df['']==df[''][0]]
-    # get df with additional info
-    dfikeys = list(dfi.keys())
-    dfi = dfi.transpose().reset_index()[idx_lst]
-    dfi.insert(loc=0, column='time', value='')
-    # rename '' to time for sorting
-    tmpdf = tmpdf.rename(columns={ tmpdf.columns[0]: 'time' })
-    # rename dfi columns according to df columns
-    for idx, item in enumerate(tmpdf.keys()):
-        dfi = dfi.rename(columns={ dfi.columns[idx]: item })
-    tmpdf = sort_df(tmpdf)
-    dfi = sort_df(dfi)
-    dfi['time'] = tmpdf['time']
-    dfc = pd.concat([tmpdf,dfi])
-    dfc = dfc.reset_index()[1:2].drop(columns='index')
-    for key in dfc.keys():
-        #if key != 'index':
-        if key != 'time':
-            dfc[key]=dfc[key].astype(float)
-    return dfc
 
 def print_available_locations():
     """
