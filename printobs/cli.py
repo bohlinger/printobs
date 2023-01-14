@@ -89,16 +89,17 @@ def main():
         fdf = format_df(df)
         # format info df
         fdf_info = None
-        print_formatted(fdf,fdf_info)
-        if v == 'v1':
-            #print(format_info_df(df,fdf,dinfo,'sensor'))
-            print(format_info_df(df,fdf,dinfo,'level'))
-            print(format_info_df(df,fdf,dinfo,'parameterid'))
-        # print to screen
-        if v == 'v1':
-            print_info(r,s)
-        print('')
-        t3 = time.time()
-        print('time used:', f'{t3-t1:.2f}', 'seconds')
+        if w is None:
+            print_formatted(fdf,fdf_info)
+            if v == 'v1':
+                #print(format_info_df(df,fdf,dinfo,'sensor'))
+                print(format_info_df(df,fdf,dinfo,'level'))
+                print(format_info_df(df,fdf,dinfo,'parameterid'))
+            # print to screen
+            if v == 'v1':
+                print_info(r,s)
+            print('')
+            t3 = time.time()
+            print('time used:', f'{t3-t1:.2f}', 'seconds')
     if w is not None:
         dump(df,p,w)

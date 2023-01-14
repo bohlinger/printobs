@@ -63,6 +63,7 @@ def call_frost_api(\
         r = call_frost_api_v1(nID, varstr,
                                 frost_reference_time,
                                 client_id)
+        print('r.status_code:',r.status_code)
     if r.status_code == 200:
         return r
     else:
