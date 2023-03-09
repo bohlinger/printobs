@@ -19,17 +19,17 @@ def main():
     Usage:
 
     For a list of available stations:
-    ./printobs
+    printobs
 
     Qyery a specific station:
-    ./printobs -s draugen
+    printobs -s draugen
 
     Extend query back in time (here e.g. 24h):
-    ./printobs -s draugen -d 24
+    printobs -s draugen -d 24
 
     Adding start and end date to query:
-    ./printobs -s draugen -sd 20220401 -ed 20220404
-    ./printobs -s draugen -sd 2022-04-01-12 -ed 2022.04.04-06:15
+    printobs -s draugen -sd 20220401 -ed 20220404
+    printobs -s draugen -sd 2022-04-01-12 -ed 2022.04.04-06:15
 
     """, formatter_class=RawTextHelpFormatter)
     parser.add_argument("-sd", metavar='startdate',

@@ -37,5 +37,5 @@ The FROST client_id can be obtained [here](http://louiseo.pages.obs.met.no/frost
 Usage example and help can be obtained by typing
 
 ```
-./printobs.py -h
+printobs -h
 ```

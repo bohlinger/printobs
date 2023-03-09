@@ -99,8 +99,8 @@ def call_frost_api_v1(\
     ID = insitu_dict[nID]['ID']
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
-    #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/kvkafka/get?'
-    endpoint = 'https://restricted.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
+    endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/kvkafka/get?'
+    #endpoint = 'https://restricted.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
     #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
     parameters = {
                 'stationids': ID,
