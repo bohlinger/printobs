@@ -8,6 +8,7 @@ import requests
 import numpy as np
 from pkg_resources import resource_stream
 import xarray as xr
+import json
 
 def load_yaml(name):
     return yaml.safe_load(
@@ -52,9 +53,13 @@ def call_frost_api(\
     varstr = ','.join(varstr_lst)
     dotenv.load_dotenv()
     client_id = os.getenv('CLIENT_ID', None)
+    client_secret = os.getenv('CLIENT_SECRET', None)
     frost_reference_time = make_frost_reference_time_period(sdate, edate)
     if client_id is None:
         print("No Frost CLIENT_ID given!")
+
+    if client_secret is None:
+        print("No Frost CLIENT_SECRET given!")
     if v == 'v0':
         r = call_frost_api_v0(nID, varstr,
                                 frost_reference_time,
@@ -62,7 +67,7 @@ def call_frost_api(\
     elif v == 'v1':
         r = call_frost_api_v1(nID, varstr,
                                 frost_reference_time,
-                                client_id)
+                                client_id, client_secret)
         print('r.status_code:',r.status_code)
     if r.status_code == 200:
         return r
@@ -91,7 +96,8 @@ def get_typeid(insitu_dict: dict, s: str) -> str:
     return typeid
 
 def call_frost_api_v1(\
-    nID: str, varstr: str,frost_reference_time: str, client_id: str)\
+    nID: str, varstr: str,frost_reference_time: str,\
+    client_id: str, client_secret: str)\
     -> 'requests.models.Response':
     """
     frost call, retrieve data from frost v1
@@ -100,8 +106,10 @@ def call_frost_api_v1(\
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/filter/get?'
     #endpoint = 'https://frost-prod.met.no/api/v1/obs/met.no/kvkafka/get?'
     #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/kvkafka/get?'
-    endpoint = 'https://restricted.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
+    #endpoint = 'https://restricted.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
     #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
+    #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
+    endpoint = 'https://test.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
@@ -110,9 +118,27 @@ def call_frost_api_v1(\
                 'incobs': 'true',
                 'sensors': '0,1,2,3,4,5',
                 #'typeids': '22,11,510'
-                'typeids': str(get_typeid(insitu_dict,nID))
+                'typeids': str(get_typeid(insitu_dict, nID))
                 }
-    return requests.get(endpoint, parameters, auth=(client_id, client_id))
+
+    header = { "client_id": client_id,
+               "client_secret": client_secret,
+               "audience":"ODA",
+               "grant_type": "urn:ietf:params:oauth:grant-type:uma-ticket"}
+
+    response = requests.post(\
+                  ("https://login.met.no/auth/realms/External/"
+                 + "protocol/openid-connect/token"),\
+                data=header)
+
+    r_tmp = json.loads(response.content)
+    headers = {"Authorization": "Bearer " + r_tmp["access_token"]}
+
+    #return requests.get(endpoint, parameters, auth=(client_id, client_id))
+    #r = requests.get(endpoint, parameters, headers=headers)
+    r = requests.post(endpoint, parameters, headers=headers)
+
+    return r
 
 def get_frost_df(r: 'requests.models.Response',v: str)\
     -> 'pandas.core.frame.DataFrame':
