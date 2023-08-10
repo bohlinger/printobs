@@ -520,6 +520,14 @@ def dump(df: 'pandas.core.frame.DataFrame', ptf: str, f: str):
     write retrieved data to file
     """
     if f == 'nc':
+        # make a new data frame of column headers and number sequentially
+        dfcolumns = pd.DataFrame({'name': df.columns})
+        dfcolumns['counter'] = dfcolumns.groupby('name').cumcount().apply(lambda n: '_dup' + str(n))
+
+        # remove counter for first case (optional) and combine suffixes
+        dfcolumns.loc[dfcolumns.counter=='_dup0', 'counter'] = ''
+        df.columns = dfcolumns['name'] + dfcolumns['counter']
+
         ds = df.to_xarray()
         ds.to_netcdf(ptf)
     elif f == 'p':
