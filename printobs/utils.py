@@ -92,7 +92,7 @@ def call_frost_api_v0(\
     return requests.get(endpoint, parameters, auth=(client_id, client_id))
 
 def get_typeid(insitu_dict: dict, s: str) -> str:
-    typeid = insitu_dict[s].get('typeids',22)
+    typeid = insitu_dict[s].get('typeids')
     return typeid
 
 def call_frost_api_v1(\
@@ -118,8 +118,12 @@ def call_frost_api_v1(\
                 'incobs': 'true',
                 'sensors': '0,1,2,3,4,5',
                 #'typeids': '22,11,510'
-                'typeids': str(get_typeid(insitu_dict, nID))
+                # 'typeids': str(get_typeid(insitu_dict, nID))
                 }
+
+    typeid = get_typeid(insitu_dict, nID)
+    if typeid is not None:
+        parameters['typeids'] = str(typeid)
 
     header = { "client_id": client_id,
                "client_secret": client_secret,
