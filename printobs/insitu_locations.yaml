@@ -12,6 +12,10 @@ sotrabrua:
 fedjevts:
     ID: 52535
 
+fedjeosennv:
+    ID: 52520
+    typeids: 38
+
 ### oil rigs ###
 asgarda:
     operator: Equinor_Energy
