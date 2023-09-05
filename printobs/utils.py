@@ -72,7 +72,10 @@ def call_frost_api(\
     if r.status_code == 200:
         return r
     else:
-        print(r.json()['error'])
+        try:
+            print(r.json()['error'])
+        except requests.exceptions.JSONDecodeError:
+            print(r.status_code, r.text)
 
 def call_frost_api_v0(\
     nID: str, varstr: str,frost_reference_time: str, client_id: str)\
