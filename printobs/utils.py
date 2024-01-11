@@ -9,6 +9,7 @@ import numpy as np
 from pkg_resources import resource_stream
 import xarray as xr
 import json
+from math import floor
 
 def load_yaml(name):
     return yaml.safe_load(
@@ -537,3 +538,56 @@ def dump(df: 'pandas.core.frame.DataFrame', ptf: str, f: str):
         df.to_pickle(ptf)
     elif f == 'csv':
         df.to_csv(ptf)
+
+def runmean(vec, win, mode=None, weights=None) -> tuple:
+    """
+    Computes the running mean with various configurations.
+
+    Args:
+        vec (numpy.ndarray | list): array of values to me smoothed
+        win (int): window length
+        mode (str): string: left, centered, right
+        weights (numpy.ndarray | list): weights (same size as win)
+
+    Returns:
+        tuple (out (numpy.ndarray), std (numpy.ndarray)):
+                array of smoothed values and std deviation
+    """
+    win = int(win)
+    if mode is None:
+        mode = 'centered'
+    out = np.zeros(len(vec))*np.nan
+    std = np.zeros(len(vec))*np.nan
+    if mode == 'left':
+        length = len(vec)
+        start = win-1
+        for i in range(start, length):
+            out[i] = np.mean(vec[i-win+1:i])
+            std[i] = np.std(vec[i-win+1:i])
+    elif mode == 'centered':
+        length = len(vec)-floor(win/2)
+        start = int(floor(win/2))
+        for i in range(start, length):
+            if win % 2 == 0:
+                sys.exit("window length needs to be odd!")
+            else:
+                sidx = int(i-start)
+                eidx = int(i+start+1)
+                if weights is not None:
+                    out[i] = np.sum(vec[sidx:eidx]*weights)
+                else:
+                    out[i] = np.mean(vec[sidx:eidx])
+                std[i] = np.std(vec[sidx:eidx])
+    elif mode == 'right':
+        length = len(vec)
+        for i in range(length-win+1):
+            out[i] = np.mean(vec[i:i+win-1])
+            std[i] = np.std(vec[i:i+win-1])
+    return out, std
+
+def averager(var, A, win, mode):
+    if "Hs" in var:
+        A_new = np.sqrt(runmean(A**2, win=win, mode=mode)[0])
+    else:
+        A_new = runmean(A, win=win, mode=mode)[0]
+    return A_new

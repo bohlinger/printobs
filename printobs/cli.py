@@ -47,6 +47,9 @@ def main():
             p - pickle\n\
             csv - csv")
     parser.add_argument("-p", metavar='path', help="path to the target file")
+    parser.add_argument("-avVar", metavar='averageVariable', help="average of chosen variable")
+    parser.add_argument("-avMode", metavar='averageMode', help="mode for averaging: left, centered, right")
+    parser.add_argument("-avWin", metavar='averageWindow', help="window for averaging")
 
     args = parser.parse_args()
     dargs = vars(args)
@@ -54,17 +57,20 @@ def main():
 # remove all None entries
     dargs = {k: v for k, v in dargs.items() if v is not None}
 
-    ed = parse_date(dargs.get('ed',datetime.now() + timedelta(hours=3)))
-    sd = parse_date(dargs.get('sd',datetime.now() - timedelta(hours=12)))
+    ed = parse_date(dargs.get('ed', datetime.now() + timedelta(hours=3)))
+    sd = parse_date(dargs.get('sd', datetime.now() - timedelta(hours=12)))
 
     if args.d is not None:
         sd = parse_date(ed) - timedelta(hours=args.d) - timedelta(hours=3)
 
     s = dargs.get('s')
     i = None
-    v = dargs.get('v','v1')
+    v = dargs.get('v', 'v1')
     w = dargs.get('w')
     p = dargs.get('p')
+    avVar = dargs.get('avVar', None)
+    avMode = dargs.get('avMode', 'centered')
+    avWin = dargs.get('avWin', 7)
 
 # -------------------------------------------------------------------- #
     if s is None:
@@ -73,16 +79,16 @@ def main():
     else:
         t1 = time.time()
         # api call
-        r = call_frost_api(sd,ed,s,v)
+        r = call_frost_api(sd, ed, s, v)
         print(r.url)
         t2 = time.time()
         print('time used for api call:', f'{t2-t1:.2f}', 'seconds')
         # get additional info
         if v == 'v1':
-            df, dinfo = get_frost_df(r,v)
+            df, dinfo = get_frost_df(r, v)
         else:
-            df = get_frost_df(r,v)
-        info_lst = list(dinfo.keys())
+            df = get_frost_df(r, v)
+        # info_lst = list(dinfo.keys())
         # reorganize df
         df = sort_df(df)
         # format data for output
@@ -90,16 +96,28 @@ def main():
         # format info df
         fdf_info = None
         if w is None:
-            print_formatted(fdf,fdf_info)
+            print_formatted(fdf, fdf_info)
             if v == 'v1':
                 #print(format_info_df(df,fdf,dinfo,'sensor'))
-                print(format_info_df(df,fdf,dinfo,'level'))
-                print(format_info_df(df,fdf,dinfo,'parameterid'))
+                print(format_info_df(df, fdf, dinfo, 'level'))
+                print(format_info_df(df, fdf, dinfo, 'parameterid'))
             # print to screen
             if v == 'v1':
-                print_info(r,s)
+                print_info(r, s)
             print('')
             t3 = time.time()
             print('time used:', f'{t3-t1:.2f}', 'seconds')
+        if avVar is not None:
+            from .utils import averager
+            import pandas as pd
+            l = list(df.keys())
+            varlst = [s for s in l if avVar in s]
+            df2 = df[['time']+varlst]
+            for var in varlst:
+                varmean = averager(var, df2[var].values, avWin, avMode)
+                with pd.option_context('mode.chained_assignment', None):
+                    df2[var] = varmean
+            fdf2 = format_df(df2)
+            print_formatted(fdf2, None)
     if w is not None:
-        dump(df,p,w)
+        dump(df, p, w)
