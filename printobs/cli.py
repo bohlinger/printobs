@@ -52,7 +52,7 @@ def main():
             p - pickle\n\
             csv - csv")
     parser.add_argument("-p", metavar='path', help="path to the target file")
-    parser.add_argument("-avVar", metavar='averageVariable', help="average of chosen variable")
+    parser.add_argument("-avVar", metavar='averageVar', help="average of chosen variable")
     parser.add_argument("-avMode", metavar='averageMode', help="mode for averaging: left, centered, right")
     parser.add_argument("-avWin", metavar='averageWindow', help="window for averaging")
 
