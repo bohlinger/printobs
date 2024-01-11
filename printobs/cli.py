@@ -34,7 +34,7 @@ def main():
     Output hourly averages of Hs related variables:
     printobs -s draugen -sd 20220401 -ed 20220404 -avVar Hs
     This is equivalent to:
-    printobs -s draugen -sd 20220401 -ed 20220404 -avVar Hs -avMode centered avWin 7
+    printobs -s draugen -sd 20220401 -ed 20220404 -avVar Hs -avMode centered -avWin 7
 
     """, formatter_class=RawTextHelpFormatter)
     parser.add_argument("-sd", metavar='startdate',
