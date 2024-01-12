@@ -122,9 +122,7 @@ def main():
                 varmean = averager(var, df2[var].values, avWin, avMode)
                 with pd.option_context('mode.chained_assignment', None):
                     df2[var] = varmean
-            print(df['Hs_0'].values[58:65])
-            print(df2['Hs_0'].values[58:65])
             fdf2 = format_df(df2)
-            #print_formatted(fdf2, None)
+            print_formatted(fdf2, None)
     if w is not None:
         dump(df, p, w)
