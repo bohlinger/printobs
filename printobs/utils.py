@@ -562,8 +562,8 @@ def runmean(vec, win, mode=None, weights=None) -> tuple:
         length = len(vec)
         start = win-1
         for i in range(start, length):
-            out[i] = np.mean(vec[i-win+1:i])
-            std[i] = np.std(vec[i-win+1:i])
+            out[i] = np.mean(vec[i-win+1:i+1])
+            std[i] = np.std(vec[i-win+1:i+1])
     elif mode == 'centered':
         length = len(vec)-floor(win/2)
         start = int(floor(win/2))
@@ -581,8 +581,8 @@ def runmean(vec, win, mode=None, weights=None) -> tuple:
     elif mode == 'right':
         length = len(vec)
         for i in range(length-win+1):
-            out[i] = np.mean(vec[i:i+win-1])
-            std[i] = np.std(vec[i:i+win-1])
+            out[i] = np.mean(vec[i:i+win])
+            std[i] = np.std(vec[i:i+win])
     return out, std
 
 def averager(var, A, win, mode):

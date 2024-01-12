@@ -33,8 +33,8 @@ def main():
 
     Output hourly averages of Hs related variables:
     printobs -s draugen -sd 20220401 -ed 20220404 -avVar Hs
-    This is equivalent to:
-    printobs -s draugen -sd 20220401 -ed 20220404 -avVar Hs -avMode centered -avWin 7
+    This is equivalent to the default:
+    printobs -s draugen -sd 20220401 -ed 20220404 -avVar Hs -avMode left -avWin 6
 
     """, formatter_class=RawTextHelpFormatter)
     parser.add_argument("-sd", metavar='startdate',
@@ -74,8 +74,8 @@ def main():
     w = dargs.get('w')
     p = dargs.get('p')
     avVar = dargs.get('avVar', None)
-    avMode = dargs.get('avMode', 'centered')
-    avWin = dargs.get('avWin', 7)
+    avMode = dargs.get('avMode', 'left')
+    avWin = dargs.get('avWin', 6)
 
 # -------------------------------------------------------------------- #
     if s is None:
@@ -122,7 +122,9 @@ def main():
                 varmean = averager(var, df2[var].values, avWin, avMode)
                 with pd.option_context('mode.chained_assignment', None):
                     df2[var] = varmean
+            print(df['Hs_0'].values[58:65])
+            print(df2['Hs_0'].values[58:65])
             fdf2 = format_df(df2)
-            print_formatted(fdf2, None)
+            #print_formatted(fdf2, None)
     if w is not None:
         dump(df, p, w)
