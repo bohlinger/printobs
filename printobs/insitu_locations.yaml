@@ -248,3 +248,8 @@ yme:
     operator: Repsol
     ID: 76929
     typeids: 22
+
+yme538:
+    operator: Repsol
+    ID: 76929
+    typeids: 538
