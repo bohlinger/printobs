@@ -56,13 +56,13 @@ ekofiskL:
     ID: 76920
     typeids: 22
 
-#ekofiskSFYa:
-#    ID: 76917
-#    typeids: 538
+ekofiskSFY_a:
+    ID: 76917
+    typeids: 538
 
-#ekofiskSFYb:
-#    ID: 76918
-#    typeids: 538
+ekofiskSFY_b:
+    ID: 76918
+    typeids: 538
 
 gjoa:
     operator: Neptun_Energy_Norge
