@@ -10,6 +10,7 @@ from pkg_resources import resource_stream
 import xarray as xr
 import json
 from math import floor
+import base64
 
 def load_yaml(name):
     return yaml.safe_load(
@@ -69,7 +70,9 @@ def call_frost_api(\
         r = call_frost_api_v1(nID, varstr,
                                 frost_reference_time,
                                 client_id, client_secret)
-        print('r.status_code:',r.status_code)
+        #print("Print r.status_code")                     
+        #print('r.status_code:',r.status_code)
+        #print("____________________________________________")
     if r.status_code == 200:
         return r
     else:
@@ -112,8 +115,9 @@ def call_frost_api_v1(\
     #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/kvkafka/get?'
     #endpoint = 'https://restricted.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
     #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
-    #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
-    endpoint = 'https://test.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
+    endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
+    #endpoint = 'https://test.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
+
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
@@ -126,25 +130,49 @@ def call_frost_api_v1(\
                 }
 
     typeid = get_typeid(insitu_dict, nID)
-    if typeid is not None:
-        parameters['typeids'] = str(typeid)
+    #if typeid is not None:
+        #parameters['typeids'] = str(typeid)
 
-    header = { "client_id": client_id,
-               "client_secret": client_secret,
-               "audience":"ODA",
-               "grant_type": "urn:ietf:params:oauth:grant-type:uma-ticket"}
+#    header = { "client_id": client_id,
+#               "client_secret": client_secret,
+#               "audience":"ODA",
+#               "grant_type": "urn:ietf:params:oauth:grant-type:uma-ticket"}
+#
+#    response = requests.post(\
+#                  ("https://login.met.no/auth/realms/External/"
+#                 + "protocol/openid-connect/token"),\
+#                data=header)
+#
+#    r_tmp = json.loads(response.content)
+#    print(r_tmp)
+#    headers = {"Authorization": "Bearer " + r_tmp["access_token"]}
+#
+#    return requests.get(endpoint, parameters, auth=(client_id, client_id))
+   
+    #id_secret
+    id_secret = "{}:{}".format(client_id, client_secret)
+    #encode id and password as base64 string
+    string_bytes = id_secret.encode("ascii")
+    base64_bytes = base64.b64encode(string_bytes)
+    base64_string = base64_bytes.decode("ascii")
+    
+    #print("____________________________________________")
+    #print("id_secret : {}".format(id_secret))
+    #print("base64_string : {}".format(base64_string))
+    
+    #format into header
+    header = {"Authorization" : "Basic "+ base64_string}
+    #print(header)
+    r = requests.get(endpoint, params=parameters, headers=header)
 
-    response = requests.post(\
-                  ("https://login.met.no/auth/realms/External/"
-                 + "protocol/openid-connect/token"),\
-                data=header)
-
-    r_tmp = json.loads(response.content)
-    headers = {"Authorization": "Bearer " + r_tmp["access_token"]}
-
-    #return requests.get(endpoint, parameters, auth=(client_id, client_id))
-    #r = requests.get(endpoint, parameters, headers=headers)
-    r = requests.post(endpoint, parameters, headers=headers)
+    
+    #Try to understand what happened
+    #print("____________________________________________")
+    #print("Print of request answer")
+    #for key, value in vars(r).items() :
+    #    print("{} : {}".format(key, value))
+    #print("____________________________________________")
+    
 
     return r
 
