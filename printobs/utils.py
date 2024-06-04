@@ -120,7 +120,7 @@ def call_frost_api_v1(\
                 'time': frost_reference_time,
                 'levels': 'all',
                 'incobs': 'true',
-                'sensors': '0,1,2,3,4,5',
+                'sensors': '0,1,2,3,4,5,6',
                 #'typeids': '22,11,510'
                 # 'typeids': str(get_typeid(insitu_dict, nID))
                 }
