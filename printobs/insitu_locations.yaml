@@ -122,9 +122,9 @@ kristin:
     ID: 76963
     typeids: 22
 
-#hjelmøybanken:
-      #  ID: 20926
-      #  typeids: 538
+hjelmøybanken:
+    ID: 20926
+    typeids: 538
 
 huldra: # not working
     operator: Equinor_Energy
