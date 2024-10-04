@@ -113,7 +113,9 @@ def call_frost_api_v1(\
     #endpoint = 'https://restricted.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
     #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
     #endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/filter/get?'
-    endpoint = 'https://test.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
+    #endpoint = 'https://test.frost-dev.k8s.met.no/api/v1/obs/met.no/kvkafka/get?'
+    # HB change to frost-beta:
+    endpoint = 'https://frost-beta.met.no/api/v1/obs/met.no/kvkafka/get?'
     parameters = {
                 'stationids': ID,
                 'elementids': varstr,
