@@ -245,6 +245,11 @@ valhall:
     #ID: 76939
     ID: 76939
     typeids: 22
+    
+valemon:
+    operator: Equinor_Energy
+    ID: 20953
+    typeids: 22
 
 veslefrikk:
     operator: Equinor_Energy
