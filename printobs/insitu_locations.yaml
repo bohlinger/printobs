@@ -45,6 +45,12 @@ draugen:
     operator: OKEA
     ID: 76925
     typeids: 22
+    
+draupner:
+    operator: Equinor_Energy
+    ID: 20954
+    typeids: 22
+
 
 # owned by Odfjell Drilling and under contract for AkerBP
 deepseaNK: # DEEPSEA NORDKAPP
@@ -234,6 +240,11 @@ trollc:
     operator: Equinor_Energy
     ID: 76937
     typeids: 22
+    
+transoceanenabler:
+    operator: Songa Offshore Management
+    ID: 77032
+    typeids: 522
 
 ula:
     operator: Aker_BP
