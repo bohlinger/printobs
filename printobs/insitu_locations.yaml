@@ -6,7 +6,6 @@ andoya_spaceport:
     ID: 87150
     typeids: 506
 
-
 nhbrua:
     ID: 52452
     typeids: 510
@@ -151,12 +150,8 @@ kristin:
     ID: 76963
     typeids: 22
 
-<<<<<<< HEAD
-hjelmøybanken:
-=======
 hjelmsøybanken:
     operator:
->>>>>>> tmp
     ID: 20926
     typeids: 538
 
