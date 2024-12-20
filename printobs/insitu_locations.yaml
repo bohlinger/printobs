@@ -1,6 +1,12 @@
 --- # information on in-situ locations
 
 ### misc ###
+
+andoya_spaceport:
+    ID: 87150
+    typeids: 506
+
+
 nhbrua:
     ID: 52452
     typeids: 510
@@ -24,6 +30,11 @@ fedjeosensv:
 asgarda:
     operator: Equinor_Energy
     ID: 76958
+    typeids: 22
+    
+aasgarda:
+    operator: Equinor_Energy
+    ID: 20946
     typeids: 22
 
 asgardb:
@@ -70,6 +81,13 @@ ekofiskSFY_b:
     ID: 76918
     typeids: 538
 
+
+gina_krog:
+    operator: 
+    ID: 20949
+    typeids: 22
+
+
 gjoa:
     operator: Neptun_Energy_Norge
     ID: 76954
@@ -108,14 +126,19 @@ hjeltefjorden_b:
     typeids: 538
 
 # d38 under /lustre/storeB/immutable/archive/projects/metproduction/DNMI_OFFSHORE/heimdal/d38/2022
-heimdal:
-    operator: Equinor_Energy
-    ID: 76932
-    typeids: 22
+#heimdal:
+#    operator: Equinor_Energy
+#    ID: 76932
+#    typeids: 22
 
 johansverdrup:
     operator:
     ID: 20929
+    typeids: 22
+    
+johancastberg:
+    operator:
+    ID: 76909
     typeids: 22
 
 kvitebjorn:
@@ -128,7 +151,12 @@ kristin:
     ID: 76963
     typeids: 22
 
+<<<<<<< HEAD
 hjelmøybanken:
+=======
+hjelmsøybanken:
+    operator:
+>>>>>>> tmp
     ID: 20926
     typeids: 538
 
@@ -176,9 +204,9 @@ osebergc:
     ID: 76965
     typeids: 22
 
-#osebergost: # OsebergEast i Vegard's liste
-    #operator: NA
-    #ID: 76966
+osebergost:
+    operator: Equionor_Energy
+    ID: 76966
 
 osebergsyd: # OsebergSouth i Vegard's liste
     operator: NA
@@ -224,6 +252,11 @@ statfjorda:
 statfjordb:
     operator: Equinor_Energy
     ID: 76934
+    typeids: 22
+    
+statfjordc:
+    operator: Equinor_Energy
+    ID: 20952
     typeids: 22
 
 trolla:
