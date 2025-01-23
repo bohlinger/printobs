@@ -54,7 +54,7 @@ def main():
     parser.add_argument("-p", metavar='path', help="path to the target file")
     parser.add_argument("-avVar", metavar='averageVar', help="average of chosen variable")
     parser.add_argument("-avMode", metavar='averageMode', help="mode for averaging: left, centered, right")
-    parser.add_argument("-avWin", metavar='averageWindow', help="window for averaging")
+    parser.add_argument("-avWin", metavar='averageWindow', help="window for averaging (nr of obs)")
 
     args = parser.parse_args()
     dargs = vars(args)
