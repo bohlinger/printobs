@@ -111,6 +111,11 @@ gullfaksc:
     ID: 76923
     typeids: 22
 
+gullfaks_buoy:
+    operator: Equinor_Energy
+    ID: 76916
+    typeids: 538
+
 heidrun:
     operator: Equinor_Energy
     ID: 76928
