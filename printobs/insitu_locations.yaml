@@ -6,7 +6,6 @@ andoya_spaceport:
     ID: 87150
     typeids: 506
 
-
 nhbrua:
     ID: 52452
     typeids: 510
@@ -112,6 +111,11 @@ gullfaksc:
     ID: 76923
     typeids: 22
 
+gullfaks_buoy:
+    operator: Equinor_Energy
+    ID: 76916
+    typeids: 538
+
 heidrun:
     operator: Equinor_Energy
     ID: 76928
@@ -151,12 +155,8 @@ kristin:
     ID: 76963
     typeids: 22
 
-<<<<<<< HEAD
-hjelmøybanken:
-=======
 hjelmsøybanken:
     operator:
->>>>>>> tmp
     ID: 20926
     typeids: 538
 
@@ -222,6 +222,11 @@ osebergsyd: # OsebergSouth i Vegard's liste
 
 scarabeo8:
     ID: 76999
+    typeids: 22
+    
+skarv:
+    operator: AkerBP
+    ID: 20958
     typeids: 22
 
 snorrea:
