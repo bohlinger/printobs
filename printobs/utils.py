@@ -10,6 +10,8 @@ from pkg_resources import resource_stream
 import xarray as xr
 import json
 from math import floor
+import sys
+import scipy as sp
 
 def load_yaml(name):
     return yaml.safe_load(
@@ -541,7 +543,7 @@ def dump(df: 'pandas.core.frame.DataFrame', ptf: str, f: str):
     elif f == 'csv':
         df.to_csv(ptf)
 
-def runmean(vec, win, mode=None, weights=None) -> tuple:
+def runmean(vec, win, mode=None, weights=None, circ=False) -> tuple:
     """
     Computes the running mean with various configurations.
 
@@ -566,6 +568,9 @@ def runmean(vec, win, mode=None, weights=None) -> tuple:
         for i in range(start, length):
             out[i] = np.mean(vec[i-win+1:i+1])
             std[i] = np.std(vec[i-win+1:i+1])
+            if circ is True:
+                out[i] = sp.stats.circmean(vec[i-win+1:i+1],
+                                           low=0, high=360)
     elif mode == 'centered':
         length = len(vec)-floor(win/2)
         start = int(floor(win/2))
@@ -577,19 +582,29 @@ def runmean(vec, win, mode=None, weights=None) -> tuple:
                 eidx = int(i+start+1)
                 if weights is not None:
                     out[i] = np.sum(vec[sidx:eidx]*weights)
+                    if circ is True:
+                        out[i] = sp.stats.circmean(vec[sidx:eidx]*weights,
+                                                   low=0, high=360)
                 else:
                     out[i] = np.mean(vec[sidx:eidx])
+                    if circ is True:
+                        out[i] = sp.stats.circmean(vec[sidx:eidx],
+                                                   low=0, high=360)
                 std[i] = np.std(vec[sidx:eidx])
     elif mode == 'right':
         length = len(vec)
         for i in range(length-win+1):
             out[i] = np.mean(vec[i:i+win])
             std[i] = np.std(vec[i:i+win])
+            if circ is True:
+                out[i] = sp.stats.circmean(vec[i:i+win], low=0, high=360)
     return out, std
 
 def averager(var, A, win, mode):
     if "Hs" in var:
         A_new = np.sqrt(runmean(A**2, win=win, mode=mode)[0])
+    elif ("DD" in var or "DDP" in var):
+        A_new = runmean(A, win=win, mode=mode, circ=True)[0]
     else:
         A_new = runmean(A, win=win, mode=mode)[0]
     return A_new
