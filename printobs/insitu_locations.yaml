@@ -223,6 +223,11 @@ osebergsyd: # OsebergSouth i Vegard's liste
 scarabeo8:
     ID: 76999
     typeids: 22
+    
+skarv:
+    operator: AkerBP
+    ID: 20958
+    typeids: 22
 
 snorrea:
     operator: Equinor_Energy
