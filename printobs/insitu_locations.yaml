@@ -45,6 +45,11 @@ aastahansteen:
     operator: Equinor_Energy
     ID: 77040
     typeids: 22
+    
+aasta538:
+    operator: Equinor_Energy
+    ID: 77040
+    typeids: 538
 
 brage:
     operator: Wintershall_Dea_Norge
