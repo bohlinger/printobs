@@ -40,6 +40,11 @@ asgardb:
     operator: Equinor_Energy
     ID: 76958
     typeids: 22
+   
+asgardb538:
+    operator: Equinor_Energy
+    ID: 76958
+    typeids: 538
 
 aastahansteen:
     operator: Equinor_Energy
