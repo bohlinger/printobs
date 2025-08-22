@@ -26,21 +26,16 @@ fedjeosenII:
     typeids: 22
 
 ### oil rigs ###
-asgarda:
+asgardaI:
     operator: Equinor_Energy
     ID: 76958
     typeids: 22
     
-aasgarda:
+asgardaII:
     operator: Equinor_Energy
     ID: 20946
     typeids: 22
 
-asgardb:
-    operator: Equinor_Energy
-    ID: 76958
-    typeids: 22
-   
 asgardb538:
     operator: Equinor_Energy
     ID: 76958
