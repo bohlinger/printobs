@@ -17,21 +17,29 @@ sotrabrua:
 fedje:
     ID: 52535
 
-fedjeosenI:
+fedjeosen1:
     ID: 52520
     typeids: 538
 
-fedjeosenII:
+fedjeosen2:
     ID: 52510
     typeids: 22
 
+fedjeosen3:
+    ID: 52508
+    typeids: 538
+
+fedjeosen4:
+    ID: 52512
+    typeids: 538
+
 ### oil rigs ###
-asgardaI:
+asgarda1:
     operator: Equinor_Energy
     ID: 76958
     typeids: 22
     
-asgardaII:
+asgarda2:
     operator: Equinor_Energy
     ID: 20946
     typeids: 22
